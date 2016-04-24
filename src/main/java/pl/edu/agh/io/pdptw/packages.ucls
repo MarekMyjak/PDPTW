@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="true" nesting-relationships="true" router="FAN">  
+  <package id="1" language="java" name="pl.edu.agh.io.pdptw.algorithm.optimization" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/algorithm/optimization" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="62" y="190"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="2" language="java" name="pl.edu.agh.io.pdptw" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="268" y="351"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="3" language="java" name="pl.edu.agh.io.pdptw.algorithm.insertion" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/algorithm/insertion" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="335" y="186"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="4" language="java" name="pl.edu.agh.io.pdptw.algorithm.removal" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/algorithm/removal" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="606" y="186"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="5" language="java" name="pl.edu.agh.io.pdptw.configuration" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/configuration" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="48" width="173" x="421" y="29"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="6" language="java" name="pl.edu.agh.io.pdptw.model" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/model" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="498" y="355"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="7" language="java" name="pl.edu.agh.io.pdptw.algorithm.generation" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/algorithm/generation" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="871" y="187"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <package id="8" language="java" name="pl.edu.agh.io.pdptw.visualization" project="PDPTW" 
+    file="/PDPTW/src/main/java/pl/edu/agh/io/pdptw/visualization" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="762" y="353"/>    
+    <display autosize="true" stereotype="true" sort-features="false" accessors="true"/>  
+  </package>  
+  <dependency id="9">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="10">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="3"/>  
+  </dependency>  
+  <dependency id="11">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </dependency>  
+  <dependency id="12">    
+    <end type="SOURCE" refId="1"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="13">    
+    <end type="SOURCE" refId="8"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="14">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="7"/>  
+  </dependency>  
+  <dependency id="15">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="16">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="17">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="6"/>  
+  </dependency>  
+  <dependency id="18">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="1"/>  
+  </dependency>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

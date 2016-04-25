@@ -6,5 +6,5 @@ import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 
 public interface GenerationAlgorithm {
-	public Solution generateSolution(Set<Request> requestPool);
+    public Solution generateSolution(Set<Request> requestPool);
 }

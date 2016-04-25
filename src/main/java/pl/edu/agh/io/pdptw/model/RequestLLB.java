@@ -1,17 +1,15 @@
 package pl.edu.agh.io.pdptw.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@AllArgsConstructor
-@Data
-public class Request {
+@Value(staticConstructor = "of")
+public class RequestLLB {
     private Integer id;
     private Location location;
     private Integer volume;
     private Integer timeWindowStart;
     private Integer timeWindowEnd;
     private Integer serviceTime;
-    private Request sibling;
-    private RequestType type;
+    private Integer pickup;
+    private Integer delivery;
 }

@@ -1,20 +1,12 @@
 package pl.edu.agh.io.pdptw.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
 public class Location {
-    private final int x;
-    private final int y;
-    
-	public Location(int x, int y) {
-		super();
-		this.x = x;
-		this.y = y;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
-	}
+    private int x;
+    private int y;
 }

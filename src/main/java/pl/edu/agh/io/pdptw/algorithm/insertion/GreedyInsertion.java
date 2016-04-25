@@ -3,13 +3,16 @@ package pl.edu.agh.io.pdptw.algorithm.insertion;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 
-
 public class GreedyInsertion implements InsertionAlgorithm {
 
-	@Override
-	public int insertRequest(Request request, Solution solution) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public int insertRequest(Request requests, Solution solution) {
+        Integer minRouteId = 0;
+        Integer minPosId = 0;
+        Integer minReqId = 0;
+        Integer minDif = null;
+        //TODO
+
+        return 0;
+    }
 
 }

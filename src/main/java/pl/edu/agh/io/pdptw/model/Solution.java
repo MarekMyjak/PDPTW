@@ -1,7 +1,7 @@
 package pl.edu.agh.io.pdptw.model;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Solution {
 	private final Set<Vehicle> vehicles;
@@ -11,13 +11,9 @@ public class Solution {
 	}
 	
 	public Set<Route> getRoutes() {
-		Set<Route> result = new HashSet<>();
-		
-		for (Vehicle vehicle : vehicles) {
-			result.add(vehicle.getRoute());
-		}
-		
-		return result;
+		return vehicles.stream()
+				.map(Vehicle::getRoute)
+				.collect(Collectors.toSet());
 	}
 
 	public Set<Vehicle> getVehicles() {

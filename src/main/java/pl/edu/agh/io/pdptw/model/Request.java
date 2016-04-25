@@ -1,14 +1,14 @@
 package pl.edu.agh.io.pdptw.model;
 
 
-public abstract class Request {
-    protected final Location location;
-    protected final Integer volume;
-    protected Integer timeWindowStart;
-    protected Integer timeWindowEnd;
-    protected Integer serviceTime;
-    protected Request sibling;
-    protected final RequestType type;
+public class Request {
+	protected final Location location;
+	protected final Integer volume;
+	protected Integer timeWindowStart;
+	protected Integer timeWindowEnd;
+	protected Integer serviceTime;
+	protected Request sibling;
+	protected final RequestType type;
     
 	protected Request(Location location, Integer volume, Integer timeWindowStart,
 			Integer timeWindowEnd, Integer serviceTime, RequestType type) {

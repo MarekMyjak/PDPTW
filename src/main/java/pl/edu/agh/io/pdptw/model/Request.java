@@ -82,6 +82,8 @@ public class Request {
 				+ ", latest request realization: " + timeWindowEnd
 				+ ", latest departure: " + (timeWindowEnd + serviceTime)
 				+ ", service time: " + serviceTime
+				+ ",\n planned realization time: " + plannedRealizationTime
+				+ ", arrival time: " + arrivalTime
 				+ ", type: " + type.toString()
 				+ ", sibling id: " + ((sibling != null) ? sibling.getId() : "N/A")
 				+ ", volume: " + volume;

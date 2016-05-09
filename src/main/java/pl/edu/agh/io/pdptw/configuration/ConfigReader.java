@@ -12,8 +12,8 @@ import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 public interface ConfigReader {
 	public List<Configuration> loadConfiguration(String configFilePath) 
 			throws IllegalArgumentException, IOException, ParseException;
-	public List<Request> loadRequests(String requestsFilePath) 
+	public List<Request> loadRequests(Configuration configuration) 
 			throws IOException, InvalidFileFormatException;
-	public List<Vehicle> loadVehicles(String vehiclesFilePath) 
+	public List<Vehicle> loadVehicles(Configuration configuration) 
 			throws IOException, ParseException;
 }

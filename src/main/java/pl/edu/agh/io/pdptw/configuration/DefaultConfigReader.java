@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -20,6 +21,7 @@ import pl.edu.agh.io.pdptw.model.DeliveryRequest;
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
+import pl.edu.agh.io.pdptw.model.RequestType;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
@@ -53,6 +55,7 @@ public class DefaultConfigReader implements ConfigReader {
 				String requestsPath = (String) test.get("requestsPath");
 				String vehiclesPath = (String) test.get("vehiclesPath");
 				String outputPath = (String) test.get("outputPath");
+				boolean isDynamic = (boolean) test.get("dynamic");
 				JSONObject algorithms = (JSONObject) test.get("algorithms");
 				
 				String generationAlgorithm = (String) algorithms.get("generation");
@@ -74,6 +77,7 @@ public class DefaultConfigReader implements ConfigReader {
 						requestsPath,
 						vehiclesPath,
 						outputPath,
+						isDynamic,
 						algorithmConfig);
 				
 				configurations.add(configuration);
@@ -84,9 +88,10 @@ public class DefaultConfigReader implements ConfigReader {
 	}
 
 	@Override
-	public List<Request> loadRequests(String requestsFilePath) 
+	public List<Request> loadRequests(Configuration configuration) 
 			throws IOException, InvalidFileFormatException {
 		
+		String requestsFilePath = configuration.getRequestsPath();
 		File requestsFile = new File(requestsFilePath);
 		int lineCounter = 0;
 		List<Request> result = new ArrayList<>();
@@ -191,13 +196,40 @@ public class DefaultConfigReader implements ConfigReader {
 					"No sibling requests found for the following ones: " + siblings.keySet());
 		}
 		
+		/* If it's a dynamic problem we need to update
+		 * the arrival time values for each pickup-delivey requests pair.
+		 * It is assumed that arrival times for each pair is stored
+		 * in a file with path just like the path to the file storing 
+		 * requests data but with additional ".arrival_times" suffix*/
+		
+		if (configuration.isDynamic()) {
+			File arrivalTimesFile = new File(requestsFilePath + ".arrival_times");
+			List<Request> pickupRequests = result.stream()
+					.filter(r -> r.getType() == RequestType.PICKUP)
+					.collect(Collectors.toList());
+			lineCounter = 0;
+			
+			try (
+				Scanner sc = new Scanner(arrivalTimesFile);
+			) {
+				while (sc.hasNextInt()) {
+					int arrivalTime = sc.nextInt();
+					Request curRequest = pickupRequests.get(lineCounter);
+					curRequest.setArrivalTime(arrivalTime);
+					curRequest.getSibling().setArrivalTime(arrivalTime);
+					lineCounter++;
+				}
+			}
+		}
+		
 		return result;
 	}
 
 	@Override
-	public List<Vehicle> loadVehicles(String vehiclesFilePath)
+	public List<Vehicle> loadVehicles(Configuration configuration)
 		throws IOException, ParseException {
 		
+		String vehiclesFilePath = configuration.getVehiclesPath();
 		List<Vehicle> result = new ArrayList<>();
 		try (
 			InputStreamReader in = new InputStreamReader(

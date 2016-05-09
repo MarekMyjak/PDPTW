@@ -29,8 +29,8 @@ public class Main {
     	try {
     		testConfigurations = configReader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
     		Configuration configuration = testConfigurations.get(0);
-			requests = configReader.loadRequests(configuration.getRequestsPath());
-			List<Vehicle> vehicles = configReader.loadVehicles(configuration.getVehiclesPath());
+			requests = configReader.loadRequests(configuration);
+			List<Vehicle> vehicles = configReader.loadVehicles(configuration);
 			
 			for (Request r : requests) {
 				System.out.println(r);

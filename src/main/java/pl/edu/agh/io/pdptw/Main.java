@@ -1,14 +1,16 @@
 package pl.edu.agh.io.pdptw;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.List;
 
-import pl.edu.agh.io.pdptw.model.Location;
-import pl.edu.agh.io.pdptw.model.PickupRequest;
+import org.json.simple.parser.ParseException;
+
+import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.configuration.DefaultConfigReader;
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.Route;
+import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
 
 public class Main {
@@ -20,28 +22,33 @@ public class Main {
 //        System.out.println(file.getCanonicalPath());
 //        LLBenchmark benchmark = requestReader.readFile(file);
         
-//    	DefaultConfigReader configReader = new DefaultConfigReader();
-//    	List<Request> requests;
-//    	List<Configuration> testConfigurations;
-//    	
-//    	try {
-//    		testConfigurations = configReader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
-//    		Configuration configuration = testConfigurations.get(0);
-//			requests = configReader.loadRequests(configuration.getRequestsPath());
-//			
-//			configuration.getAlgorithms().getOptimizationAlgorithm().optimize(null, null);
-//			configuration.getAlgorithms().getInsertionAlgorithm().insertRequest(null, null);
-//			
-//		} catch (InvalidFileFormatException e) {
-//			LoggingUtils.logStackTrace(e);
-//		} catch (ParseException e) {
-//			LoggingUtils.logStackTrace(e);
-//		} catch (IOException e) {
-//			LoggingUtils.logStackTrace(e);
-//			LoggingUtils.error("An error occurred while reading input file");
-//		} catch (IllegalArgumentException e) {
-//			LoggingUtils.logStackTrace(e);
-//		}
+    	DefaultConfigReader configReader = new DefaultConfigReader();
+    	List<Request> requests;
+    	List<Configuration> testConfigurations;
+    	
+    	try {
+    		testConfigurations = configReader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
+    		Configuration configuration = testConfigurations.get(0);
+			requests = configReader.loadRequests(configuration.getRequestsPath());
+			List<Vehicle> vehicles = configReader.loadVehicles(configuration.getVehiclesPath());
+			
+			for (Request r : requests) {
+				System.out.println(r);
+			}
+			for (Vehicle v : vehicles) {
+				System.out.println(v);
+			}
+			
+		} catch (InvalidFileFormatException e) {
+			LoggingUtils.logStackTrace(e);
+		} catch (ParseException e) {
+			LoggingUtils.logStackTrace(e);
+		} catch (IOException e) {
+			LoggingUtils.logStackTrace(e);
+			LoggingUtils.error("An error occurred while reading input file");
+		} catch (IllegalArgumentException e) {
+			LoggingUtils.logStackTrace(e);
+		}
     	
     }
 }

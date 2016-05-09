@@ -27,19 +27,12 @@ public class GreedyInsertionTest {
 		List<Request> pool = route.getRequests();
 		Request lastRequest = pool.get(pool.size() - 1);
 		
-//		PickupRequest pickup = new PickupRequest(
-//				REQUESTS_NO + 1, new Location(lastRequest.getLocation().getX() + 1, 0),
-//				120, lastRequest.getTimeWindowEnd() + 20, lastRequest.getTimeWindowEnd() + 100, 50);
-//		DeliveryRequest delivery = new DeliveryRequest(
-//				REQUESTS_NO + 2, new Location(pickup.getLocation().getX() + 1, 0),
-//				-120, pickup.getTimeWindowEnd() + 20, pickup.getTimeWindowEnd() + 100, 50);
-		
 		PickupRequest pickup = new PickupRequest(
-				REQUESTS_NO + 1, new Location(1, 0),
-				100, 0, 0, 50);
+				REQUESTS_NO + 1, new Location(lastRequest.getLocation().getX() + 1, 0),
+				120, lastRequest.getTimeWindowEnd() + 20, lastRequest.getTimeWindowEnd() + 100, 50);
 		DeliveryRequest delivery = new DeliveryRequest(
-				REQUESTS_NO + 2, new Location(2, 0),
-				-100, 0, 51, 50);
+				REQUESTS_NO + 2, new Location(pickup.getLocation().getX() + 1, 0),
+				-120, pickup.getTimeWindowEnd() + 20, pickup.getTimeWindowEnd() + 100, 50);
 		
 		pickup.setSibling(delivery);
 		delivery.setSibling(pickup);

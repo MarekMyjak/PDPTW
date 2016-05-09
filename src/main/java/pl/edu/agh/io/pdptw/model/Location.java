@@ -9,4 +9,9 @@ import lombok.NoArgsConstructor;
 public class Location {
     private int x;
     private int y;
+    
+    @Override 
+    public String toString() {
+    	return "(" + x + "," + y + ")";
+    }
 }

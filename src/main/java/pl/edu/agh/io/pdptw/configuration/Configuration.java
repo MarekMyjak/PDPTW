@@ -1,19 +1,12 @@
 package pl.edu.agh.io.pdptw.configuration;
 
-import lombok.Data;
-import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.optimization.OptimizationAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.removal.RemovalAlgorithm;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
 public class Configuration {
-	private String requestsPath;
-	private String vehiclesPath;
-	private String configPath;
-	private GenerationAlgorithm generationAlgorithm;
-	private InsertionAlgorithm insertionAlgorithm;
-	private RemovalAlgorithm removalAlgorithm;
-	private OptimizationAlgorithm optimizationAlgorithm;
-
+	@Getter private final String requestsPath;
+	@Getter private final String vehiclesPath;
+	@Getter private final String outputPath;
+	@Getter private final AlgorithmConfiguration algorithms;
 }

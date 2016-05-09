@@ -1,5 +1,19 @@
 package pl.edu.agh.io.pdptw.configuration;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.json.simple.parser.ParseException;
+
+import pl.edu.agh.io.pdptw.model.Request;
+import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
+
 public interface ConfigReader {
-	public Configuration createConfiguration(String configFilePath);
+	public List<Configuration> loadConfiguration(String configFilePath) 
+			throws IllegalArgumentException, IOException, ParseException;
+	public List<Request> loadRequests(String requestsFilePath) 
+			throws IOException, InvalidFileFormatException;
+	public List<Vehicle> loadVehicles(String vehiclesFilePath) 
+			throws IOException, ParseException;
 }

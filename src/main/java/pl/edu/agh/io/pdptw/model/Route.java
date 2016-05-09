@@ -1,15 +1,19 @@
 package pl.edu.agh.io.pdptw.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+
 public class Route {
-	private final Set<Request> servicedRequests;
-	private final Set<Request> requests;
+	@Getter private final List<Request> servicedRequests;
+	@Getter private final List<Request> requests;
 	
-	public Route(Set<Request> requests) {
+	public Route(List<Request> requests) {
 		super();
-		this.servicedRequests = new HashSet<>();
+		
+		this.servicedRequests = new ArrayList<>();
 		this.requests = requests;
 	}
 	
@@ -20,17 +24,5 @@ public class Route {
 		
 		requests.remove(request);
 		servicedRequests.add(request);
-	}
-	
-	public void insertRequestAt(Request request, int position) {
-		
-	}
-
-	public Set<Request> getServicedRequests() {
-		return servicedRequests;
-	}
-
-	public Set<Request> getRequests() {
-		return requests;
 	}
 }

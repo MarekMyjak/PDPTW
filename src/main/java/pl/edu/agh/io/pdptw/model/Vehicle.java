@@ -66,8 +66,8 @@ public class Vehicle {
 					- next.getLocation().getY();
 			nextDistance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
 			
-			insertionPossible = insertionPossible 
-					&& (request.getTimeWindowEnd() 
+			insertionPossible = insertionPossible
+					&& (request.getTimeWindowEnd()
 						+ request.getServiceTime()
 						+ nextDistance <= next.getTimeWindowEnd());
 		}
@@ -84,7 +84,7 @@ public class Vehicle {
 		
 		if (insertionPossible) {
 			double loadedVolume = pool.stream()
-					.mapToDouble(r -> r.getVolume())
+					.mapToDouble(Request::getVolume)
 					.sum();
 			if (loadedVolume <= maxCapacity) {
 				pool.add(position, request);
@@ -102,7 +102,7 @@ public class Vehicle {
 				"id: %s, max capacity: %d, currently loaded: %d, location: (%d, %d), route: \n[\n",
 				id, maxCapacity, currentlyLoaded, location.getX(), location.getY());
 		List<String> requestsStrings = route.getRequests().stream()
-				.map(r -> r.toString())
+				.map(Request::toString)
 				.collect(Collectors.toList());
 		
 		for (String req : requestsStrings) {

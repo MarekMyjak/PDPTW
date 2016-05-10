@@ -1,5 +1,8 @@
 package pl.edu.agh.io.pdptw.model;
 
+import lombok.ToString;
+
+@ToString
 public enum RequestType {
 	PICKUP("pickup"),
 	DELIVERY("delivery");
@@ -8,10 +11,5 @@ public enum RequestType {
 	
 	private RequestType(String name) {
 		this.name = name;
-	}
-	
-	@Override
-	public String toString() {
-		return this.name;
 	}
 }

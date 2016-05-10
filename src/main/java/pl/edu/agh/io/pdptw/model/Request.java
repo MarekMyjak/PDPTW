@@ -3,12 +3,12 @@ package pl.edu.agh.io.pdptw.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @EqualsAndHashCode
 @Data
+@ToString(includeFieldNames = true)
 public class Request {
 	
 	/* Time window parameters explanation:
@@ -21,15 +21,15 @@ public class Request {
 	 * @serviceTime - time required to serve the specific request
 	 * @arrivalTime - time of the arrival of the request to the requests pool */
 	
-    @Getter @Setter protected Integer id;
-    @Getter @Setter protected Location location;
-    @Getter @Setter protected Integer volume;
-    @Getter @Setter protected Integer timeWindowStart;
-    @Getter @Setter protected Integer timeWindowEnd;
-    @Getter @Setter protected Integer serviceTime;
-    @Getter @Setter protected Integer plannedRealizationTime;
-    @Getter @Setter protected Integer arrivalTime;
-    @Getter protected Request sibling;
+	protected Integer id;
+	protected Location location;
+	protected Integer volume;
+	protected Integer timeWindowStart;
+	protected Integer timeWindowEnd;
+	protected Integer serviceTime;
+	protected Integer plannedRealizationTime;
+	protected Integer arrivalTime;
+	protected Request sibling;
     
     /* It is necessary not to make setter method
     for TYPE member available from this abstract 
@@ -40,7 +40,7 @@ public class Request {
     Storing this field will be helpful while implementing
     algorithms operating on objects of this class. */
     
-    @Getter protected RequestType type;
+    protected RequestType type;
     
 	public Request(Integer id, Location location, Integer volume,
 			Integer timeWindowStart, Integer timeWindowEnd,
@@ -73,7 +73,7 @@ public class Request {
 		
 		this.sibling = request;
 	}
-	
+
 	@Override
 	public String toString() {
 		String desc = "id: " + id
@@ -87,7 +87,7 @@ public class Request {
 				+ ", type: " + type.toString()
 				+ ", sibling id: " + ((sibling != null) ? sibling.getId() : "N/A")
 				+ ", volume: " + volume;
-				
+
 		return desc;
 	}
 }

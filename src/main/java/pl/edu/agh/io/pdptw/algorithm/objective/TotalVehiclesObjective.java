@@ -17,7 +17,7 @@ public class TotalVehiclesObjective implements Objective {
 			})
 			.collect(Collectors.toList())
 			.size();
-		
+
 		return result;
 	}
 

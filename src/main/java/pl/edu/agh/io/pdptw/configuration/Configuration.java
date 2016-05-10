@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
+@Getter
 public class Configuration {
-	@Getter private final String requestsPath;
-	@Getter private final String vehiclesPath;
-	@Getter private final String outputPath;
-	@Getter private final boolean dynamic;
-	@Getter private final AlgorithmConfiguration algorithms;
+	private final String requestsPath;
+	private final String vehiclesPath;
+	private final String outputPath;
+	private final boolean dynamic;
+	private final AlgorithmConfiguration algorithms;
 }

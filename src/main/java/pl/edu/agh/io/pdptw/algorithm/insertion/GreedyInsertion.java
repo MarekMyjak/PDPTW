@@ -10,21 +10,10 @@ import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class GreedyInsertion implements InsertionAlgorithm {
-
-    public int insertRequest(PickupRequest request, Solution solution, Objective objective) {
-        Integer minRouteId = 0;
-        Integer minPosId = 0;
-        Integer minReqId = 0;
-        Integer minDif = null;
-        //TODO
-
-        return 0;
-    }
-
-    /* The returned value is equal to the position 
+	/* The returned value is equal to the position
      * of the newly insrted pickup request in the 
      * requests pool */
-    
+
 	@Override
 	public int insertRequestToVehicleRoute(PickupRequest pickup, Vehicle vehicle, Objective objective) {
 		Request delivery = pickup.getSibling();

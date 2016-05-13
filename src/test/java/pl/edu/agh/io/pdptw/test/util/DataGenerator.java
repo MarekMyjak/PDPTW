@@ -49,7 +49,6 @@ public class DataGenerator {
 	}
 	
 	public static Route generateRoute(int n) {
-		Route result = new Route(generateRequestsPool(n));
-		return result;
+		return new Route(generateRequestsPool(n));
 	}
 }

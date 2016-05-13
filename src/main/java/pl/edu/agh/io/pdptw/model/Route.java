@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import jdk.nashorn.internal.objects.annotations.Constructor;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@Getter
 public class Route {
-	@Getter private final List<Request> servicedRequests;
-	@Getter private final List<Request> requests;
+	private final List<Request> servicedRequests;
+	private final List<Request> requests;
 	
 	public Route(List<Request> requests) {
 		super();
-		
+
 		this.servicedRequests = new ArrayList<>();
 		this.requests = requests;
 	}

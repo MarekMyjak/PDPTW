@@ -11,11 +11,9 @@ public class TotalDistanceObjective implements Objective {
 
 	@Override
 	public double calculate(Solution solution) {
-		double result = solution.getRoutes().stream()
-				.mapToDouble(r -> calculateForRoute(r))
+		return solution.getRoutes().stream()
+				.mapToDouble(this::calculateForRoute)
 				.sum();
-				
-		return result;
 	}
 
 	@Override

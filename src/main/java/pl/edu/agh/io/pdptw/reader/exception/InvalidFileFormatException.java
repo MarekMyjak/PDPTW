@@ -1,5 +1,8 @@
 package pl.edu.agh.io.pdptw.reader.exception;
 
+import lombok.ToString;
+
+@ToString
 public class InvalidFileFormatException extends Exception {
 	private String message;
 	
@@ -8,10 +11,5 @@ public class InvalidFileFormatException extends Exception {
 	}
 	public InvalidFileFormatException(String message) {
 		this.message = message;
-	}
-	
-	@Override
-	public String getMessage() {
-		return this.message;
 	}
 }

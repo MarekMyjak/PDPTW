@@ -17,11 +17,6 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-//        RequestReader requestReader = new RequestReader();
-//        File file = new File("Li & Lim benchmark/readerTest/lc101.txt");
-//        System.out.println(file.getCanonicalPath());
-//        LLBenchmark benchmark = requestReader.readFile(file);
-        
     	DefaultConfigReader configReader = new DefaultConfigReader();
     	List<Request> requests;
     	List<Configuration> testConfigurations;
@@ -40,16 +35,12 @@ public class Main {
 				System.out.println(v);
 			}
 			
-		} catch (InvalidFileFormatException e) {
-			LoggingUtils.logStackTrace(e);
-		} catch (ParseException e) {
+		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);
 		} catch (IOException e) {
 			LoggingUtils.logStackTrace(e);
 			LoggingUtils.error("An error occurred while reading input file");
-		} catch (IllegalArgumentException e) {
-			LoggingUtils.logStackTrace(e);
 		}
-    	
-    }
+
+	}
 }

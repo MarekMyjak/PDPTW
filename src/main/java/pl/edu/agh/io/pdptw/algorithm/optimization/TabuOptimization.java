@@ -10,7 +10,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 	@Override
 	public void optimize(Solution solution, Set<Request> requestPool) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

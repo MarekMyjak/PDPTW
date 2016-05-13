@@ -19,6 +19,8 @@ import pl.edu.agh.io.pdptw.algorithm.removal.RandomRemoval;
 import pl.edu.agh.io.pdptw.algorithm.removal.RemovalAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.removal.ShawRemoval;
 import pl.edu.agh.io.pdptw.algorithm.removal.WorstRemoval;
+import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
+import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
 
 import com.google.inject.AbstractModule;
 
@@ -36,6 +38,8 @@ public class AlgorithmModule extends AbstractModule {
 		optimizationAlgorithms = new HashMap<>();
 	private static final Map<String, Class<? extends Objective>> 
 		objectives = new HashMap<>();
+	private static final Map<String, Class<? extends Scheduler>> 
+		schedulers = new HashMap<>();
 	
 	static {
 		generationAlgorithms.put("greedy", GreedyGeneration.class);
@@ -52,6 +56,8 @@ public class AlgorithmModule extends AbstractModule {
 		
 		objectives.put("total_distance", TotalDistanceObjective.class);
 		objectives.put("total_vehicles", TotalVehiclesObjective.class);
+		
+		schedulers.put("drive_first", DriveFirstScheduler.class);
 	}
 	
 	@Override
@@ -79,6 +85,10 @@ public class AlgorithmModule extends AbstractModule {
 		algorithmNamesValid = objectives.containsKey(description.getObjectiveName());
 		if (!algorithmNamesValid) {
 			builder.append(String.format(ERROR_MESSAGE_PATTERN, "objective"));
+		}
+		algorithmNamesValid = schedulers.containsKey(description.getSchedulerName());
+		if (!algorithmNamesValid) {
+			builder.append(String.format(ERROR_MESSAGE_PATTERN, "scheduling"));
 		}
 		
 		if (!algorithmNamesValid) {

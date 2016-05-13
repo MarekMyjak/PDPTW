@@ -17,7 +17,7 @@ public class Route {
 		this.requests = requests;
 	}
 	
-	public void markRequestAsServiced(Request request) throws IllegalArgumentException {
+	public void markRequestAsServed(Request request) throws IllegalArgumentException {
 		if (!requests.contains(request)) {
 			throw new IllegalArgumentException("No such request found");
 		}

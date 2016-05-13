@@ -17,12 +17,12 @@ import pl.edu.agh.io.pdptw.model.Route;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
-public class GreedyInsertionTest {
+public class GreedyInsertionTooHighVolumeTest {
 	private final int REQUESTS_NO = 10;
 	private Route route = DataGenerator.generateRoute(REQUESTS_NO);
 	private Objective objective = new TotalDistanceObjective();
 	private InsertionAlgorithm insertionAlg = new GreedyInsertion();
-	
+		
 	@Test
 	public void test() {
 		List<Request> pool = route.getRequests();
@@ -30,10 +30,10 @@ public class GreedyInsertionTest {
 		
 		PickupRequest pickup = new PickupRequest(
 				lastRequest.getId() + 1, new Location(lastRequest.getLocation().getX() + 1, 0),
-				100, lastRequest.getTimeWindowEnd() + 20, lastRequest.getTimeWindowEnd() + 100, 50);
+				1000, lastRequest.getTimeWindowEnd() + 20, lastRequest.getTimeWindowEnd() + 100, 50);
 		DeliveryRequest delivery = new DeliveryRequest(
 				pickup.getId() + 1, new Location(pickup.getLocation().getX() + 1, 0),
-				-100, pickup.getTimeWindowEnd() + 20, pickup.getTimeWindowEnd() + 100, 50);
+				-1000, pickup.getTimeWindowEnd() + 20, pickup.getTimeWindowEnd() + 100, 50);
 		
 		pickup.setSibling(delivery);
 		delivery.setSibling(pickup);
@@ -41,9 +41,8 @@ public class GreedyInsertionTest {
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		
-		int expected = REQUESTS_NO;
+		int expected = Integer.MIN_VALUE;
 		int actual = insertionAlg.insertRequestToVehicleRoute(pickup, vehicle, objective);
 		assertEquals(expected, actual, 0);
 	}
-
 }

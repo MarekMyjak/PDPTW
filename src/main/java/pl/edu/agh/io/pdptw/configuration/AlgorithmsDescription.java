@@ -11,4 +11,5 @@ public class AlgorithmsDescription {
 	String removalAlgorithmName;
 	String optimizationAlgorithmName;
 	String objectiveName;
+	String schedulerName;
 }

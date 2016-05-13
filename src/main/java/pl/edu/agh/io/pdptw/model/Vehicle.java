@@ -1,12 +1,15 @@
 package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +20,7 @@ public class Vehicle {
     private Location location;
     private final Location startLocation;
     private Route route;
+    @Setter @Getter private static Scheduler scheduler;
     
 	public Vehicle(String id, Integer maxCapacity,
 			Location startLocation) {
@@ -25,75 +29,153 @@ public class Vehicle {
 				new Route(new ArrayList<Request>()));
 	}
 	
-	public boolean insertRequest(int position, Request request) {
-		assert position <= route.getRequests().size();
+	public boolean isInsertionPossible(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {
+		List<Request> requests = route.getRequests();
 		
-		boolean insertionPossible = true;
-		List<Request> pool = route.getRequests();
-		Request next = null;
-		Request prev = null;
-		double prevDistance = 0;
-		double nextDistance = 0;
-		double xDiff = 0;
-		double yDiff = 0;
+		assert pickupPosition <= route.getRequests().size();
+		assert deliveryPosition <= route.getRequests().size();
+		assert pickupPosition < deliveryPosition;
+		assert pickupPosition <= requests.size();
+		assert deliveryPosition <= requests.size() + 1;
 		
-		/* Check whether it's possible to realize
-		 * the previous request before starting
-		 * serving the one being inserted. */
-		
-		if (position > 0) {
-			prev = pool.get(position - 1);
-			xDiff = prev.getLocation().getX()
-					- request.getLocation().getX();
-			yDiff = prev.getLocation().getY()
-					- request.getLocation().getY();
-			prevDistance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-			
-			insertionPossible = (prev.getTimeWindowEnd() 
-					+ prev.getServiceTime() 
-					+ prevDistance <= request.getTimeWindowEnd());
-		} 
-		
-		/* Check whether it's possible to realize
-		 * the currently inserted request before starting
-		 * serving the next one. */
-		
-		if (insertionPossible && position < pool.size()) {
-			next = pool.get(position);
-			xDiff = request.getLocation().getX()
-					- next.getLocation().getX();
-			yDiff = request.getLocation().getY()
-					- next.getLocation().getY();
-			nextDistance = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
-			
-			insertionPossible = insertionPossible 
-					&& (request.getTimeWindowEnd() 
-						+ request.getServiceTime()
-						+ nextDistance <= next.getTimeWindowEnd());
-		}
-		
-		/* Check whether the total volume of packages
+		/* Check whether:
+		 * - the total volume of packages
 		 * is less or equal to the maximum capacity of
 		 * the vehicle. 
-		 * 
-		 * TODO: If we insert a pickup request, how
-		 * should we check whether the capacity constraint
-		 * is satisfied without knowledge of the position
-		 * of the corresponding delivery request?  
-		 * */
+		 * - updated realization times satisfy the 
+		 * time window constraints (realizationTime <= timeWindowEnd)
+		 */
+
+		Request deliveryRequest = pickupRequest.getSibling();
+		boolean insertionPossible = true;
+		Request prev = null;
+		Request cur = null;
+		double totalVolume = 0;
+		Iterator<Request> it = requests.iterator();
+		int prevOriginalRealizationTime = 0;
+		int curOriginalRealizationTime = 0;
+		int counter = 0;
+		
+		while (insertionPossible
+				&& it.hasNext() 
+				&& counter < pickupPosition) {
+			
+			prev = it.next();
+			totalVolume += prev.getVolume();
+			insertionPossible = (totalVolume <= maxCapacity);
+			counter++;
+		}
+		
+		if (prev != null) {
+			scheduler.updateSuccessor(prev, pickupRequest);
+			insertionPossible = insertionPossible
+					&& (pickupRequest.getRealizationTime() <= pickupRequest.getTimeWindowEnd());
+					
+		}
+		
+		totalVolume += pickupRequest.getVolume();
+		insertionPossible = insertionPossible && (totalVolume <= maxCapacity);
+		prev = pickupRequest;
+		prevOriginalRealizationTime = pickupRequest.getRealizationTime();
+		counter++;
+		
+		while (insertionPossible 
+				&& it.hasNext() 
+				&& counter < deliveryPosition) {
+			
+			cur = it.next();
+			totalVolume += cur.getVolume();
+			curOriginalRealizationTime = cur.getRealizationTime();
+			scheduler.updateSuccessor(prev, cur);
+			insertionPossible = (cur.getRealizationTime() <= cur.getTimeWindowEnd())
+					&& (totalVolume <= maxCapacity);
+			prev.setRealizationTime(prevOriginalRealizationTime);
+			prev = cur;
+			prevOriginalRealizationTime = curOriginalRealizationTime;
+			counter++;
+		}
+		
+		if (prev != null) {
+			scheduler.updateSuccessor(prev, deliveryRequest);
+			prev.setRealizationTime(prevOriginalRealizationTime);
+			insertionPossible = insertionPossible 
+					&& (deliveryRequest.getRealizationTime() <= deliveryRequest.getTimeWindowEnd());
+		}
 		
 		if (insertionPossible) {
-			double loadedVolume = pool.stream()
-					.mapToDouble(r -> r.getVolume())
-					.sum();
-			if (loadedVolume <= maxCapacity) {
-				pool.add(position, request);
-			} else {
-				insertionPossible = false;
-			}
+			totalVolume += deliveryRequest.getVolume();
+			insertionPossible = insertionPossible && (totalVolume <= maxCapacity);
+			prev = deliveryRequest;
+			prevOriginalRealizationTime = deliveryRequest.getRealizationTime();
+			counter++;
+		}
+		
+		while (insertionPossible 
+				&& it.hasNext()) {
+			
+			cur = it.next();
+			totalVolume += cur.getVolume();
+			curOriginalRealizationTime = cur.getRealizationTime();
+			scheduler.updateSuccessor(prev, cur);
+			insertionPossible = (cur.getRealizationTime() <= cur.getTimeWindowEnd())
+					&& (totalVolume <= maxCapacity);
+			prev.setRealizationTime(prevOriginalRealizationTime);
+			prev = cur;
+			prevOriginalRealizationTime = curOriginalRealizationTime;
+			counter++;
+		}
+		
+		if (prev != null) {
+			prev.setRealizationTime(prevOriginalRealizationTime);
+		}
+		
+		if (!insertionPossible) {
+			pickupRequest.setRealizationTime(pickupRequest.getTimeWindowStart());
+			deliveryRequest.setRealizationTime(deliveryRequest.getTimeWindowStart());
 		}
 		
 		return insertionPossible;
+	}
+	
+	public void updateRealizationTimes() {
+		scheduler.scheduleRequests(this);
+	}
+	
+	public void insertRequest(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {
+		List<Request> requests = route.getRequests();
+		requests.add(pickupPosition, pickupRequest);
+		requests.add(deliveryPosition, pickupRequest.getSibling());
+		updateRealizationTimes();
+	}
+	
+	public void removeRequest(int pickupPosition, int deliveryPosition) {
+		List<Request> requests = route.getRequests();
+		
+		assert pickupPosition >= 0;
+		assert deliveryPosition >= 0;
+		assert pickupPosition < requests.size();
+		assert deliveryPosition < requests.size();
+		
+		requests.remove(pickupPosition);
+		
+		/* [deliveryPosition -1] because after removing the pickup request
+		 * the position of the delivery request is decremented
+		 * by 1. Note that pickup request is always added
+		 * to the route before the corresponding delivery request. */
+		
+		requests.remove(deliveryPosition - 1);
+		updateRealizationTimes();
+	}
+	
+	public void removeRequest(PickupRequest pickupRequest) {
+		List<Request> requests = route.getRequests();
+		
+		assert requests.contains(pickupRequest);
+		assert requests.contains(pickupRequest.getSibling());
+		
+		requests.remove(pickupRequest);
+		requests.remove(pickupRequest.getSibling());
+		updateRealizationTimes();
 	}
     
 	@Override

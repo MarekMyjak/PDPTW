@@ -23,68 +23,43 @@ public class GreedyInsertion implements InsertionAlgorithm {
 
     /* The returned value is equal to the position 
      * of the newly insrted pickup request in the 
-     * requests pool */
+     * requests requests */
     
 	@Override
 	public int insertRequestToVehicleRoute(PickupRequest pickup, Vehicle vehicle, Objective objective) {
-		Request delivery = pickup.getSibling();
 		int pickupPosition = Integer.MIN_VALUE;
 		int deliveryPosition = Integer.MIN_VALUE;
 		double minObjective = Integer.MAX_VALUE;
 		double newObjective = Integer.MAX_VALUE;
 		Route route = vehicle.getRoute();
-		List<Request> pool = route.getRequests();
+		List<Request> requests = route.getRequests();
 		
 		/* looking for the best position
 		 * to add the new pickup request */
 		
-		for (int i = 0; i <= pool.size(); i++) {
-			if (vehicle.insertRequest(i, pickup)) {
-				newObjective = objective.calculateForRoute(route);
-				pool.remove(i);
+		for (int pPos = 0; pPos <= requests.size(); pPos++) {
+			for (int dPos = pPos + 1; dPos <= requests.size() + 1; dPos++) {
 				
-				if (newObjective < minObjective) {
-					minObjective = newObjective;
-					pickupPosition = i;
-				}
-			} else {
-				System.out.println("SKIPPED ins " + i);
-			}
-		}
-		
-		if (pickupPosition >= 0) {
-			pool.add(pickupPosition, pickup);
-			
-			/* looking for the best position for the delivery
-			 * request. 
-			 * Attention: position of the delivery request must be
-			 * greater than the position of the pickup request!
-			 * (it is not possible to deliver the package before
-			 * picking it up!) */
-			
-			minObjective = Integer.MAX_VALUE;
-			
-			for (int i = pickupPosition + 1; i <= pool.size(); i++) {
-				if (vehicle.insertRequest(i, delivery)) {
+				if (vehicle.isInsertionPossible(pickup, pPos, dPos)) {
+					
+					vehicle.insertRequest(pickup, pPos, dPos);
 					newObjective = objective.calculateForRoute(route);
-					pool.remove(i);
 					
 					if (newObjective < minObjective) {
 						minObjective = newObjective;
-						deliveryPosition = i;
+						pickupPosition = pPos;
+						deliveryPosition = dPos;
 					}
+					
+					vehicle.removeRequest(pickup);
 				}
 			}
+		}
+		
+		if (pickupPosition > Integer.MIN_VALUE
+				&& deliveryPosition > Integer.MIN_VALUE) {
 			
-			if (deliveryPosition > 0) {
-				pool.add(deliveryPosition, delivery);
-			} else {
-				
-				/* remove the previously inserted pickup request */
-				
-				pool.remove(pickupPosition);
-				pickupPosition = Integer.MIN_VALUE;
-			}
+			vehicle.insertRequest(pickup, pickupPosition, deliveryPosition);
 		}
 		
 		return pickupPosition;

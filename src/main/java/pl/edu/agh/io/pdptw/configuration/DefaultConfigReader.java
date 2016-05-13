@@ -63,13 +63,15 @@ public class DefaultConfigReader implements ConfigReader {
 				String removalAlgorithm = (String) algorithms.get("removal");
 				String optimizationAlgorithm = (String) algorithms.get("optimization");
 				String objective = (String) algorithms.get("objective");
+				String scheduler = (String) algorithms.get("scheduler");
 				
 				AlgorithmsDescription description = new AlgorithmsDescription(
 					generationAlgorithm,
 					insertionAlgorithm,
 					removalAlgorithm,
 					optimizationAlgorithm,
-					objective);
+					objective,
+					scheduler);
 				
 				Injector injector = Guice.createInjector(new AlgorithmModule(description));
 				AlgorithmConfiguration algorithmConfig = injector.getInstance(AlgorithmConfiguration.class);
@@ -197,7 +199,7 @@ public class DefaultConfigReader implements ConfigReader {
 		}
 		
 		/* If it's a dynamic problem we need to update
-		 * the arrival time values for each pickup-delivey requests pair.
+		 * the arrival time values for each pickup-delivery requests pair.
 		 * It is assumed that arrival times for each pair is stored
 		 * in a file with path just like the path to the file storing 
 		 * requests data but with additional ".arrival_times" suffix*/

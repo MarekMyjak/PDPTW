@@ -27,7 +27,7 @@ public class Request {
     @Getter @Setter protected Integer timeWindowStart;
     @Getter @Setter protected Integer timeWindowEnd;
     @Getter @Setter protected Integer serviceTime;
-    @Getter @Setter protected Integer plannedRealizationTime;
+    @Getter @Setter protected Integer realizationTime;
     @Getter @Setter protected Integer arrivalTime;
     @Getter protected Request sibling;
     
@@ -59,7 +59,7 @@ public class Request {
 		 * if necessary it can be updated */
 		
 		this.arrivalTime = 0;
-		this.plannedRealizationTime = timeWindowStart;
+		this.realizationTime = timeWindowStart;
 		this.type = type;
 	}
 	
@@ -82,7 +82,7 @@ public class Request {
 				+ ", latest request realization: " + timeWindowEnd
 				+ ", latest departure: " + (timeWindowEnd + serviceTime)
 				+ ", service time: " + serviceTime
-				+ ",\n planned realization time: " + plannedRealizationTime
+				+ ",\n planned realization time: " + realizationTime
 				+ ", arrival time: " + arrivalTime
 				+ ", type: " + type.toString()
 				+ ", sibling id: " + ((sibling != null) ? sibling.getId() : "N/A")

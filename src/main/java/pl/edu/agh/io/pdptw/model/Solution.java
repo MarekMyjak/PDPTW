@@ -1,5 +1,6 @@
 package pl.edu.agh.io.pdptw.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,5 +19,11 @@ public class Solution {
 
 	public Set<Vehicle> getVehicles() {
 		return vehicles;
+	}
+	
+	public Set<Request> getRequests() {
+		return (Set<Request>) getRoutes().stream()
+				.flatMap(r -> r.getRequests().stream())
+				.collect(Collectors.toCollection(HashSet::new));
 	}
 }

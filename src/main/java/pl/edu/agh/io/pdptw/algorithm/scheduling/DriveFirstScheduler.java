@@ -37,9 +37,15 @@ public class DriveFirstScheduler implements Scheduler {
 	@Override
 	public void updateSuccessor(Request prev, Request cur) {
 		double distance = Location.calculateDistance(prev.getLocation(), cur.getLocation());
-		cur.setRealizationTime((int) (prev.getRealizationTime()
+		int earliestRealizationTime = (int) (prev.getRealizationTime()
 				+ prev.getServiceTime()
-				+ distance));
+				+ distance);
+		
+		earliestRealizationTime = (earliestRealizationTime > cur.getTimeWindowStart())
+				? earliestRealizationTime
+				: cur.getTimeWindowStart();
+		
+		cur.setRealizationTime(earliestRealizationTime);
 	}
 
 	@Override

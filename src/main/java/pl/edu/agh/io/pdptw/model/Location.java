@@ -10,7 +10,17 @@ import lombok.ToString;
 public class Location {
     private int x;
     private int y;
-        
+    private double polarAngle;    
+    
+    public Location(int x, int y) {
+    	this.x = x;
+    	this.y = y;
+    }
+    
+    public void updatePolarAngle(Location coordSystemCenter) {
+    	this.polarAngle = calculatePolarAngle(coordSystemCenter, this);
+    }
+    
     /* "ordinary" Euclidean distance */
     
     public static double calculateDistance(Location l1, Location l2) {

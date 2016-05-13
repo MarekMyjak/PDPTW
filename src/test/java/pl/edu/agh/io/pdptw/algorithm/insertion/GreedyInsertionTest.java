@@ -41,9 +41,9 @@ public class GreedyInsertionTest {
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		
-		int expected = REQUESTS_NO;
-		int actual = insertionAlg.insertRequestToVehicleRoute(pickup, vehicle, objective);
-		assertEquals(expected, actual, 0);
+		boolean expected = true;
+		boolean actual = insertionAlg.insertRequest(pickup, vehicle, objective);
+		assertEquals(expected, actual);
 	}
 
 }

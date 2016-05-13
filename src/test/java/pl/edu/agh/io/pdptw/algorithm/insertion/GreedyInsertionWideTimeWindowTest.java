@@ -1,5 +1,7 @@
 package pl.edu.agh.io.pdptw.algorithm.insertion;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.junit.Assert;
@@ -40,9 +42,8 @@ public class GreedyInsertionWideTimeWindowTest {
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		
-		int expected = 0;
-		int actual = insertionAlg.insertRequestToVehicleRoute(pickup, vehicle, objective);
-		System.out.println(vehicle);
-		Assert.assertEquals(expected, actual, 0);
+		boolean expected = true;
+		boolean actual = insertionAlg.insertRequest(pickup, vehicle, objective);
+		assertEquals(expected, actual);
 	}
 }

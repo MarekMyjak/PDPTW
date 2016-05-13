@@ -41,8 +41,8 @@ public class GreedyInsertionTooHighVolumeTest {
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		
-		int expected = Integer.MIN_VALUE;
-		int actual = insertionAlg.insertRequestToVehicleRoute(pickup, vehicle, objective);
-		assertEquals(expected, actual, 0);
+		boolean expected = false;
+		boolean actual = insertionAlg.insertRequest(pickup, vehicle, objective);
+		assertEquals(expected, actual);
 	}
 }

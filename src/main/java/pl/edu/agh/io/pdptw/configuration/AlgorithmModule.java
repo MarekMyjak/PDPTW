@@ -105,6 +105,8 @@ public class AlgorithmModule extends AbstractModule {
 				optimizationAlgorithms.get(description.getOptimizationAlgorithmName()));
 		bind(Objective.class).to(
 				objectives.get(description.getObjectiveName()));
+		bind(Scheduler.class).to(
+				schedulers.get(description.getSchedulerName()));
 	}
 
 }

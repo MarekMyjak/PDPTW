@@ -6,9 +6,16 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(exclude={"sibling"})
 @Data
-@ToString(includeFieldNames = true)
+
+/* ATTENTION: 
+ * Using lombok's @ToString annotation causes
+ * StackOverflow exception because
+ * a Request object contains other 
+ * object of this class so we deal
+ * with a cyclical toString() calls. */
+
 public class Request {
 	
 	/* Time window parameters explanation:
@@ -72,5 +79,13 @@ public class Request {
 		}
 		
 		this.sibling = request;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("id: %d, type: %s, loc: %s, tstart: %d, realt: %d, tend: %d, servt: %d,"
+				+ " sid: %d, v: %d", 
+				id, type.toString(), location, timeWindowStart, realizationTime, timeWindowEnd, serviceTime,
+				sibling.getId(), volume);
 	}
 }

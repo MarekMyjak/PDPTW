@@ -15,13 +15,14 @@ public class GreedyInsertion implements InsertionAlgorithm {
      */
 
 	@Override
-	public int insertRequestToVehicleRoute(PickupRequest pickup, Vehicle vehicle, Objective objective) {
+	public boolean insertRequest(PickupRequest pickup, Vehicle vehicle, Objective objective) {
 		int pickupPosition = Integer.MIN_VALUE;
 		int deliveryPosition = Integer.MIN_VALUE;
 		double minObjective = Integer.MAX_VALUE;
 		double newObjective = Integer.MAX_VALUE;
 		Route route = vehicle.getRoute();
 		List<Request> pool = route.getRequests();
+		boolean result = true;
 		
 		/* looking for the best position
 		 * to add the new pickup request */
@@ -49,9 +50,12 @@ public class GreedyInsertion implements InsertionAlgorithm {
 				&& deliveryPosition > Integer.MIN_VALUE) {
 			
 			vehicle.insertRequest(pickup, pickupPosition, deliveryPosition);
+			result = true;
+		} else {
+			result = false;
 		}
 		
-		return pickupPosition;
+		return result;
 	}
 
 }

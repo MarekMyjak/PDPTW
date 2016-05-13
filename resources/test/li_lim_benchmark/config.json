@@ -10,7 +10,8 @@
 				"insertion": "greedy",
 				"removal": "random",
 				"optimization": "tabu",
-				"objective": "total_distance"
+				"objective": "total_distance",
+				"scheduler": "drive_first"
 			}
 		}
 	]

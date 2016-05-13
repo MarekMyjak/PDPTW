@@ -1,31 +1,27 @@
-package pl.edu.agh.io.pdptw;
+package pl.edu.agh.io.pdptw.model;
 
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.json.simple.parser.ParseException;
+import org.junit.Test;
 
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
-import pl.edu.agh.io.pdptw.algorithm.objective.TotalVehiclesObjective;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.configuration.DefaultConfigReader;
 import pl.edu.agh.io.pdptw.logging.LoggingUtils;
-import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.RequestType;
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.model.Vehicle;
 import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
+public class VehicleInsertionPossibleTest {
 
-public class Main {
-
-    public static void main(String[] args) throws IOException {
-    	try {
+	@Test
+	public void test() {
+		try {
     		DefaultConfigReader configReader = new DefaultConfigReader();
     		List<Configuration> testConfigurations;
     		testConfigurations = configReader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
@@ -38,24 +34,35 @@ public class Main {
 			GenerationAlgorithm generation = algs.getGenerationAlgorithm();
 			InsertionAlgorithm insertion = algs.getInsertionAlgorithm();
 			Objective objective = algs.getObjective();
-			Solution solution = generation.generateSolution(requests, vehicles, insertion, objective);
+			Vehicle vehicle = vehicles.get(0);
+			List<Integer> soughtIds = Arrays.asList(57, 9, 56, 6);
 			
-			for (Vehicle v : solution.getVehicles()) {
-				System.out.println(v);
-			}
-			
-			System.out.println("requests total: " + requests.size());
-			System.out.println("inserted total: " + solution.getRequests().size());
-			System.out.println("vehicles used: " + solution.getVehicles().size());
-			Objective totalVehicles = new TotalVehiclesObjective();
-			System.out.println("tv objective: " + totalVehicles.calculate(solution));
-			
+			PickupRequest r57 = (PickupRequest)requests.stream()
+					.filter(r -> r.getId().equals(57))
+					.collect(Collectors.toList())
+					.get(0);
+			PickupRequest r56 = (PickupRequest)requests.stream()
+					.filter(r -> r.getId().equals(56))
+					.collect(Collectors.toList())
+					.get(0);
+			PickupRequest r9 = (PickupRequest)requests.stream()
+					.filter(r -> r.getId().equals(9))
+					.collect(Collectors.toList())
+					.get(0);
+			PickupRequest r6 = (PickupRequest)requests.stream()
+					.filter(r -> r.getId().equals(6))
+					.collect(Collectors.toList())
+					.get(0);
+
+			insertion.insertRequest(r6, vehicle, objective);
+			insertion.insertRequest(r56, vehicle, objective);
+			System.out.println(vehicle);
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);
 		} catch (IOException e) {
 			LoggingUtils.logStackTrace(e);
 			LoggingUtils.error("An error occurred while reading input file");
 		}
-
 	}
+
 }

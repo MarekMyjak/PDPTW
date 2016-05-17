@@ -6,20 +6,21 @@ import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Route;
 import pl.edu.agh.io.pdptw.model.Solution;
+import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class TotalDistanceObjective implements Objective {
 
 	@Override
 	public double calculate(Solution solution) {
-		return solution.getRoutes().stream()
-				.mapToDouble(this::calculateForRoute)
+		return solution.getVehicles().stream()
+				.mapToDouble(this::calculateForVehicle)
 				.sum();
 	}
 
 	@Override
-	public double calculateForRoute(Route route) {
+	public double calculateForVehicle(Vehicle vehicle) {
 		double result = 0;
-		Iterator<Request> it = route.getRequests().iterator();
+		Iterator<Request> it = vehicle.getRoute().getRequests().iterator();
 		
 		if (it.hasNext()) {
 			Request prevRequest = it.next();

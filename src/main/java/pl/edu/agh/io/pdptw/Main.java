@@ -47,8 +47,6 @@ public class Main {
 			System.out.println("requests total: " + requests.size());
 			System.out.println("inserted total: " + solution.getRequests().size());
 			System.out.println("vehicles used: " + solution.getVehicles().size());
-			Objective totalVehicles = new TotalVehiclesObjective();
-			System.out.println("tv objective: " + totalVehicles.calculate(solution));
 			
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);

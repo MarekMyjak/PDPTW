@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 
 import pl.edu.agh.io.pdptw.model.Route;
 import pl.edu.agh.io.pdptw.model.Solution;
+import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class TotalVehiclesObjective implements Objective {
 
@@ -22,7 +23,7 @@ public class TotalVehiclesObjective implements Objective {
 	}
 
 	@Override
-	public double calculateForRoute(Route route) {
+	public double calculateForVehicle(Vehicle vehicle) {
 		return 1;
 	}
 

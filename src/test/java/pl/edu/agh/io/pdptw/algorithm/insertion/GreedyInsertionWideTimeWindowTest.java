@@ -43,7 +43,7 @@ public class GreedyInsertionWideTimeWindowTest {
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		
 		boolean expected = true;
-		boolean actual = insertionAlg.insertRequest(pickup, vehicle, objective);
+		boolean actual = insertionAlg.insertRequestForVehicle(pickup, vehicle, objective);
 		assertEquals(expected, actual);
 	}
 }

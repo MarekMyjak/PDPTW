@@ -167,15 +167,39 @@ public class Vehicle {
 		updateRealizationTimes();
 	}
 	
-	public void removeRequest(PickupRequest pickupRequest) {
+	public Request removeRequest(int pickupPosition) {
+		List<Request> requests = route.getRequests();
+		
+		assert pickupPosition >= 0;
+		assert pickupPosition < requests.size();
+		
+		Request deliveryRequest = requests.get(pickupPosition).getSibling();
+		requests.remove(pickupPosition);
+		
+		/* [deliveryPosition -1] because after removing the pickup request
+		 * the position of the delivery request is decremented
+		 * by 1. Note that pickup request is always added
+		 * to the route before the corresponding delivery request. */
+		
+		requests.remove(deliveryRequest);
+		updateRealizationTimes();
+		
+		return deliveryRequest.getSibling();
+	}
+	
+	public Pair<Integer, Integer> removeRequest(PickupRequest pickupRequest) {
 		List<Request> requests = route.getRequests();
 		
 		assert requests.contains(pickupRequest);
 		assert requests.contains(pickupRequest.getSibling());
 		
+		int pickupPosition = requests.indexOf(pickupRequest);
+		int deliveryPosition = requests.indexOf(pickupRequest.getSibling());
 		requests.remove(pickupRequest);
 		requests.remove(pickupRequest.getSibling());
 		updateRealizationTimes();
+		
+		return new Pair<Integer, Integer>(pickupPosition, deliveryPosition);
 	}
     
 	@Override

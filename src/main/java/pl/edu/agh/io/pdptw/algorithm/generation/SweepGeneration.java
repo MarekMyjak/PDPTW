@@ -1,6 +1,5 @@
 package pl.edu.agh.io.pdptw.algorithm.generation;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -41,8 +40,9 @@ public class SweepGeneration implements GenerationAlgorithm {
 		
 		/* sort requests by the increasing polar angle */
 		
-		List<Request> pickupRequests = (List<Request>) requestPool.stream()
+		List<PickupRequest> pickupRequests = (List<PickupRequest>) requestPool.stream()
 				.filter(r -> r.getType() == RequestType.PICKUP)
+				.map(r -> (PickupRequest) r)
 				.sorted((r1, r2) -> {
 					double r1Angle = r1.getLocation().getPolarAngle();
 					double r2Angle = r2.getLocation().getPolarAngle();
@@ -58,9 +58,9 @@ public class SweepGeneration implements GenerationAlgorithm {
 		while (pickupRequests.size() > 0
 				&& vehiclesIt.hasNext()) {
 			
-			PickupRequest curRequest = (PickupRequest) pickupRequests.remove(0); 
+			PickupRequest curRequest = pickupRequests.remove(0); 
 			Vehicle curVehicle = vehiclesIt.next();
-			insertedSuccessfully = insertionAlg.insertRequest(curRequest, curVehicle, objective);
+			insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, objective);
 			Location pickupLocation = curRequest.getLocation();
 			Location deliveryLocation = curRequest.getSibling().getLocation();
 			
@@ -77,7 +77,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 			 *  i.e. lying in the area within the 
 			 *  lower boundary - warehouse - upper boundary angle */
 			
-			List<Request> pickupsInSector = pickupRequests.stream()
+			List<PickupRequest> pickupsInSector = pickupRequests.stream()
 					.filter(r -> {
 						Location p = r.getLocation();
 						Location d = r.getSibling().getLocation();
@@ -88,16 +88,16 @@ public class SweepGeneration implements GenerationAlgorithm {
 							&& d.getPolarAngle() <= lowerBoundary.getPolarAngle();
 							
  					}).collect(Collectors.toList());
-			Iterator<Request> sectorIt = pickupsInSector.iterator();
+			Iterator<PickupRequest> sectorIt = pickupsInSector.iterator();
 			
 			/* Try to insert each request */
 			
 			while (sectorIt.hasNext()) {
-				PickupRequest pickupToInsert = (PickupRequest) sectorIt.next();
+				PickupRequest pickupToInsert = sectorIt.next();
 				if (pickupToInsert.getId().equals(56)) {
 					System.out.println("sector 56");
 				}
-				insertedSuccessfully = insertionAlg.insertRequest(
+				insertedSuccessfully = insertionAlg.insertRequestForVehicle(
 						pickupToInsert, curVehicle, objective);
 				
 				/* Remove the newly dispatched request from the 
@@ -119,7 +119,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 					&& insertedSuccessfully) {
 				
 				double curAngle = curRequest.getLocation().getPolarAngle();
-				Iterator<Request> nearestIt = pickupRequests.stream()
+				Iterator<PickupRequest> nearestIt = pickupRequests.stream()
 						.sorted((r1, r2) -> {
 							Location p1 = r1.getLocation();
 							Location p2 = r2.getLocation();
@@ -135,8 +135,8 @@ public class SweepGeneration implements GenerationAlgorithm {
 						.iterator();
 				
 				while (insertedSuccessfully && nearestIt.hasNext()) {
-					PickupRequest nearestRequest = (PickupRequest) nearestIt.next();
-					insertedSuccessfully = insertionAlg.insertRequest(
+					PickupRequest nearestRequest = nearestIt.next();
+					insertedSuccessfully = insertionAlg.insertRequestForVehicle(
 							nearestRequest, curVehicle, objective);
 					if (insertedSuccessfully) {
 						pickupRequests.remove(nearestRequest);

@@ -54,8 +54,8 @@ public class VehicleInsertionPossibleTest {
 					.collect(Collectors.toList())
 					.get(0);
 
-			insertion.insertRequest(r6, vehicle, objective);
-			insertion.insertRequest(r56, vehicle, objective);
+			insertion.insertRequestForVehicle(r6, vehicle, objective);
+			insertion.insertRequestForVehicle(r56, vehicle, objective);
 			System.out.println(vehicle);
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);

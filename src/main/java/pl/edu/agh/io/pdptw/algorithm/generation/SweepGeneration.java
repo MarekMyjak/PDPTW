@@ -1,14 +1,13 @@
 package pl.edu.agh.io.pdptw.algorithm.generation;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
@@ -20,7 +19,8 @@ public class SweepGeneration implements GenerationAlgorithm {
 
 	@Override
 	public Solution generateSolution(List<Request> requestPool, List<Vehicle> vehicles,
-			InsertionAlgorithm insertionAlg, Objective objective) throws IllegalArgumentException {
+			Configuration config)
+			throws IllegalArgumentException {
 		
 		if (requestPool == null) {
 			throw new IllegalArgumentException("Pool of requests list is set to NULL");
@@ -29,7 +29,9 @@ public class SweepGeneration implements GenerationAlgorithm {
 			throw new IllegalArgumentException("Vehicles list is set to NULL");
 		}
 		
-		Set<Vehicle> usedVehicles = new HashSet<>();
+		InsertionAlgorithm insertionAlg = config.getAlgorithms().getInsertionAlgorithm();
+		Objective objective = config.getAlgorithms().getObjective();
+		List<Vehicle> usedVehicles = new LinkedList<>();
 		Solution result = new Solution(usedVehicles);
 		Location warehouseLocation = vehicles.get(0).getLocation();
 

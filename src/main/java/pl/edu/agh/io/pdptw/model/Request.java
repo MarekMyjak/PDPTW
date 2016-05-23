@@ -11,7 +11,7 @@ import lombok.ToString;
 
 /* ATTENTION: 
  * Using lombok's @ToString annotation causes
- * StackOverflow exception because
+ * StackOverflowException because
  * a Request object contains other 
  * object of this class so we deal
  * with a cyclical toString() calls. */
@@ -84,8 +84,8 @@ public class Request {
 	@Override
 	public String toString() {
 		return String.format("id: %d, type: %s, loc: %s, tstart: %d, realt: %d, tend: %d, servt: %d,"
-				+ " sid: %d, v: %d", 
+				+ " sid: %s, v: %d", 
 				id, type.toString(), location, timeWindowStart, realizationTime, timeWindowEnd, serviceTime,
-				sibling.getId(), volume);
+				(sibling != null) ? "" + sibling.getId() : "NO SIBLING", volume);
 	}
 }

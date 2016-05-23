@@ -13,6 +13,7 @@ import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
 
 @Data
 @AllArgsConstructor
+
 public class Vehicle {
     private final String id;
     private final Integer maxCapacity;
@@ -20,6 +21,8 @@ public class Vehicle {
     private Location location;
     private final Location startLocation;
     private Route route;
+    
+    /* note the static keyword */
     @Setter @Getter private static Scheduler scheduler;
     
 	public Vehicle(String id, Integer maxCapacity,
@@ -148,7 +151,7 @@ public class Vehicle {
 		updateRealizationTimes();
 	}
 	
-	public void removeRequest(int pickupPosition, int deliveryPosition) {
+	public Request removeRequest(int pickupPosition, int deliveryPosition) {
 		List<Request> requests = route.getRequests();
 		
 		assert pickupPosition >= 0;
@@ -156,7 +159,7 @@ public class Vehicle {
 		assert pickupPosition < requests.size();
 		assert deliveryPosition < requests.size();
 		
-		requests.remove(pickupPosition);
+		Request pickup = requests.remove(pickupPosition);
 		
 		/* [deliveryPosition -1] because after removing the pickup request
 		 * the position of the delivery request is decremented
@@ -165,6 +168,8 @@ public class Vehicle {
 		
 		requests.remove(deliveryPosition - 1);
 		updateRealizationTimes();
+		
+		return pickup;
 	}
 	
 	public Request removeRequest(int pickupPosition) {
@@ -187,7 +192,7 @@ public class Vehicle {
 		return deliveryRequest.getSibling();
 	}
 	
-	public Pair<Integer, Integer> removeRequest(PickupRequest pickupRequest) {
+	public RequestPositions removeRequest(PickupRequest pickupRequest) {
 		List<Request> requests = route.getRequests();
 		
 		assert requests.contains(pickupRequest);
@@ -199,7 +204,7 @@ public class Vehicle {
 		requests.remove(pickupRequest.getSibling());
 		updateRealizationTimes();
 		
-		return new Pair<Integer, Integer>(pickupPosition, deliveryPosition);
+		return new RequestPositions(pickupPosition, deliveryPosition);
 	}
     
 	@Override

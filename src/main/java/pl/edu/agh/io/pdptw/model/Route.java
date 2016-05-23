@@ -2,13 +2,14 @@ package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import jdk.nashorn.internal.objects.annotations.Constructor;
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
+
 public class Route {
 	private final List<Request> servicedRequests;
 	private final List<Request> requests;
@@ -27,5 +28,15 @@ public class Route {
 		
 		requests.remove(request);
 		servicedRequests.add(request);
+	}
+	
+	@Override
+	public String toString() {
+		return "["+ 
+				String.join(", ", 
+						requests.stream()
+							.map(r -> "id=" + r.getId() + " " + r.getLocation())
+							.collect(Collectors.toList()))
+				+ "]";
 	}
 }

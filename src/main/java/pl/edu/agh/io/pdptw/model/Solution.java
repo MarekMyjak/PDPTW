@@ -1,29 +1,39 @@
 package pl.edu.agh.io.pdptw.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@ToString
+@EqualsAndHashCode
+
 public class Solution {
-	private final Set<Vehicle> vehicles;
+	private final List<Vehicle> vehicles;
+	@Setter private double objectiveValue;
 	
-	public Solution(Set<Vehicle> vehicles) {
+	public Solution(List<Vehicle> vehicles) {
 		this.vehicles = vehicles;
+		this.objectiveValue= 0.0;
 	}
 	
-	public Set<Route> getRoutes() {
+	public List<Route> getRoutes() {
 		return vehicles.stream()
 				.map(Vehicle::getRoute)
-				.collect(Collectors.toSet());
+				.collect(Collectors.toList());
 	}
 
-	public Set<Vehicle> getVehicles() {
+	public List<Vehicle> getVehicles() {
 		return vehicles;
 	}
 	
-	public Set<Request> getRequests() {
-		return (Set<Request>) getRoutes().stream()
+	public List<Request> getRequests() {
+		return (List<Request>) getRoutes().stream()
 				.flatMap(r -> r.getRequests().stream())
-				.collect(Collectors.toCollection(HashSet::new));
+				.collect(Collectors.toList());
 	}
 }

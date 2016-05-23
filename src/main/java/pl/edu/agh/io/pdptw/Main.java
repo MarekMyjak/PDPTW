@@ -11,6 +11,8 @@ import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalVehiclesObjective;
+import pl.edu.agh.io.pdptw.algorithm.optimization.AdaptiveMemory;
+import pl.edu.agh.io.pdptw.algorithm.optimization.OptimizationAlgorithm;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.configuration.DefaultConfigReader;
@@ -26,19 +28,18 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
     	try {
-    		DefaultConfigReader configReader = new DefaultConfigReader();
+    		DefaultConfigReader loader = new DefaultConfigReader();
     		List<Configuration> testConfigurations;
-    		testConfigurations = configReader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
+    		testConfigurations = loader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
     		Configuration configuration = testConfigurations.get(0);
     		Vehicle.setScheduler(configuration.getAlgorithms().getScheduler());
-    		List<Request> requests = configReader.loadRequests(configuration);
-			List<Vehicle> vehicles = configReader.loadVehicles(configuration);
+    		List<Request> requests = loader.loadRequests(configuration);
+			List<Vehicle> vehicles = loader.loadVehicles(configuration);
 			
 			AlgorithmConfiguration algs = configuration.getAlgorithms();
 			GenerationAlgorithm generation = algs.getGenerationAlgorithm();
-			InsertionAlgorithm insertion = algs.getInsertionAlgorithm();
+			Solution solution = generation.generateSolution(requests, vehicles, configuration);
 			Objective objective = algs.getObjective();
-			Solution solution = generation.generateSolution(requests, vehicles, insertion, objective);
 			
 			for (Vehicle v : solution.getVehicles()) {
 				System.out.println(v);
@@ -47,6 +48,10 @@ public class Main {
 			System.out.println("requests total: " + requests.size());
 			System.out.println("inserted total: " + solution.getRequests().size());
 			System.out.println("vehicles used: " + solution.getVehicles().size());
+			System.out.println("Objective value :" + objective.calculate(solution));
+			
+			OptimizationAlgorithm optimization = configuration.getAlgorithms()
+					.getOptimizationAlgorithm();
 			
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);

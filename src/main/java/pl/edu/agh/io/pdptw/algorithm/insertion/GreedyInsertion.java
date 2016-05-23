@@ -3,8 +3,7 @@ package pl.edu.agh.io.pdptw.algorithm.insertion;
 import java.util.List;
 
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
-import pl.edu.agh.io.pdptw.model.OptimalRequestPosition;
-import pl.edu.agh.io.pdptw.model.Pair;
+import pl.edu.agh.io.pdptw.model.RequestPositions;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
@@ -18,7 +17,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 
 	@Override
 	public boolean insertRequestForVehicle(PickupRequest pickup, Vehicle vehicle, Objective objective) {
-		OptimalRequestPosition bestPosition = 
+		RequestPositions bestPosition = 
 				findBestInsertionPositions(pickup, vehicle, objective);
 		boolean inserted = false;
 		
@@ -34,7 +33,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 	}
 
 	@Override
-	public OptimalRequestPosition findBestInsertionPositions(
+	public RequestPositions findBestInsertionPositions(
 			PickupRequest pickup, Vehicle vehicle, Objective objective) {
 		
 		int pickupPosition = Integer.MAX_VALUE;
@@ -42,7 +41,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 		double minObjective = Integer.MAX_VALUE;
 		double newObjective = Integer.MAX_VALUE;
 		List<Request> requests = vehicle.getRoute().getRequests();
-		OptimalRequestPosition bestPositions = OptimalRequestPosition.createDefault();
+		RequestPositions bestPositions = RequestPositions.createDefault();
 		
 		/* looking for the best position
 		 * to add the new pickup request */
@@ -68,7 +67,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 		
 		if (pickupPosition != Integer.MAX_VALUE
 				&& deliveryPosition != Integer.MAX_VALUE) {
-			bestPositions = new OptimalRequestPosition(pickupPosition, deliveryPosition, minObjective);
+			bestPositions = new RequestPositions(pickupPosition, deliveryPosition, minObjective);
 		}
 		
 		return bestPositions;
@@ -79,17 +78,18 @@ public class GreedyInsertion implements InsertionAlgorithm {
 			Solution solution, Objective objective) {
 		
 		double minValue = Integer.MAX_VALUE;
-		OptimalRequestPosition bestPosition = OptimalRequestPosition.createDefault();
+		RequestPositions bestPosition = RequestPositions.createDefault();
 		Vehicle bestVehicle = null;
 		boolean inserted = false;
 		
 		for (Vehicle vehicle : solution.getVehicles()) {
-			OptimalRequestPosition curPosition = 
+			RequestPositions curPosition = 
 					findBestInsertionPositions(pickup, vehicle, objective);		
 			
 			if (curPosition.getObjectiveValue() < minValue) {
 				bestPosition = curPosition;
 				bestVehicle = vehicle;
+				minValue = curPosition.getObjectiveValue();
 			}
 		}
 		

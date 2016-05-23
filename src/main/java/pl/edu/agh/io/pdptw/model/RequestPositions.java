@@ -8,14 +8,18 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @EqualsAndHashCode
 
-public final class OptimalRequestPosition {
+public final class RequestPositions {
 	private static final int DEFAULT_VALUE = Integer.MAX_VALUE;
 	
 	private int pickupPosition;
 	private int deliveryPosition;
 	private double objectiveValue;
 	
-	public static OptimalRequestPosition createDefault() {
-		return new OptimalRequestPosition(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE);
+	public RequestPositions (int pickupPosition, int deliveryPosition) {
+		this(pickupPosition, deliveryPosition, DEFAULT_VALUE);
+	}
+	
+	public static RequestPositions createDefault() {
+		return new RequestPositions(DEFAULT_VALUE, DEFAULT_VALUE, DEFAULT_VALUE);
 	}
 }

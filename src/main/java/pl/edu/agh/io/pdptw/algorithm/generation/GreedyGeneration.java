@@ -5,6 +5,7 @@ import java.util.Set;
 
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
@@ -13,10 +14,11 @@ public class GreedyGeneration implements GenerationAlgorithm {
 
 	@Override
 	public Solution generateSolution(List<Request> requestPool,
-			List<Vehicle> vehicles, InsertionAlgorithm insertionAlg,
-			Objective objective) throws IllegalArgumentException {
+			List<Vehicle> vehicles, Configuration configuration)
+			throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

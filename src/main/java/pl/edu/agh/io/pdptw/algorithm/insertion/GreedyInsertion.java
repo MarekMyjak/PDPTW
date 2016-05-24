@@ -1,13 +1,9 @@
 package pl.edu.agh.io.pdptw.algorithm.insertion;
 
-import java.util.List;
-
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
-import pl.edu.agh.io.pdptw.model.RequestPositions;
-import pl.edu.agh.io.pdptw.model.PickupRequest;
-import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.model.*;
+
+import java.util.List;
 
 public class GreedyInsertion implements InsertionAlgorithm {
 	
@@ -42,7 +38,6 @@ public class GreedyInsertion implements InsertionAlgorithm {
 		double newObjective = Integer.MAX_VALUE;
 		List<Request> requests = vehicle.getRoute().getRequests();
 		RequestPositions bestPositions = RequestPositions.createDefault();
-		
 		/* looking for the best position
 		 * to add the new pickup request */
 		

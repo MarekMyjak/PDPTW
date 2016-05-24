@@ -1,14 +1,11 @@
 package pl.edu.agh.io.pdptw.algorithm.generation;
 
-import java.util.List;
-import java.util.Set;
-
-import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
+
+import java.util.List;
 
 public class GreedyGeneration implements GenerationAlgorithm {
 

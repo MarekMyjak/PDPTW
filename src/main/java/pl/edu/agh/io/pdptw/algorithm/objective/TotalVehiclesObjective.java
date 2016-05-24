@@ -1,10 +1,10 @@
 package pl.edu.agh.io.pdptw.algorithm.objective;
 
-import java.util.stream.Collectors;
-
 import pl.edu.agh.io.pdptw.model.Route;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
+
+import java.util.stream.Collectors;
 
 public class TotalVehiclesObjective implements Objective {
 

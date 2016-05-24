@@ -1,24 +1,13 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
-import pl.edu.agh.io.pdptw.model.PickupRequest;
-import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.RequestType;
-import pl.edu.agh.io.pdptw.model.Route;
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.model.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AdaptiveMemory {
 	private static final double MAX_OBJECTIVE_DIFFERENCE = 0.001;

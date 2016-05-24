@@ -1,18 +1,16 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
-import java.util.ArrayList;
+import org.junit.Test;
+import pl.edu.agh.io.pdptw.algorithm.generation.DataGenerator;
+import pl.edu.agh.io.pdptw.model.Solution;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.Test;
-
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
 public class AdaptiveMemoryRandomSolutionIndicesTest {
 

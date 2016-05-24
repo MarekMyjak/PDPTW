@@ -1,12 +1,11 @@
 package pl.edu.agh.io.pdptw.algorithm.objective;
 
-import java.util.Iterator;
-
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.Route;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
+
+import java.util.Iterator;
 
 public class TotalDistanceObjective implements Objective {
 

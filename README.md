@@ -8,3 +8,8 @@ mvn clean install -DskipTests
 
 Easiest way to run is import project to IntelIj/Eclipse and run Main.java
 Lombok plugin is required when using IDE
+
+//////////////////////////
+
+Wizualizacja przy użyciu visjs
+http://visjs.org/docs/network/

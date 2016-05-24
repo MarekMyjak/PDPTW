@@ -13,6 +13,7 @@ import pl.edu.agh.io.pdptw.model.*;
 import pl.edu.agh.io.pdptw.model.visualization.VisualizationData;
 import pl.edu.agh.io.pdptw.model.visualization.VisualizationRoute;
 import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
+import pl.edu.agh.io.pdptw.visualization.VisualizationService;
 
 import java.io.IOException;
 import java.util.LinkedList;
@@ -45,6 +46,9 @@ public class Main {
 			
 			OptimizationAlgorithm optimization = configuration.getAlgorithms()
 					.getOptimizationAlgorithm();
+
+			VisualizationService service = new VisualizationService();
+			service.makeVisualizationData(solution);
 
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);

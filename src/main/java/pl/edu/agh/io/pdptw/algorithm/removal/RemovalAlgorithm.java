@@ -8,7 +8,7 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public interface RemovalAlgorithm {
 	
-	public RequestPositions findBestRemovalPositions(Vehicle vehicle, Configuration configuration);
-	public Request removeRequestForVehicle(Vehicle vehicle, Configuration configuration);
-	public Request removeRequestFromSolution(Solution solution, Configuration configuration);
+	RequestPositions findBestRemovalPositions(Vehicle vehicle, Configuration configuration);
+	Request removeRequestForVehicle(Vehicle vehicle, Configuration configuration);
+	Request removeRequestFromSolution(Solution solution, Configuration configuration);
 }

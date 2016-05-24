@@ -8,6 +8,6 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 import java.util.List;
 
 public interface GenerationAlgorithm {
-    public Solution generateSolution(List<Request> requestPool, List<Vehicle> vehicles,
-			Configuration configuration) throws IllegalArgumentException;
+    Solution generateSolution(List<Request> requestPool, List<Vehicle> vehicles,
+                              Configuration configuration) throws IllegalArgumentException;
 }

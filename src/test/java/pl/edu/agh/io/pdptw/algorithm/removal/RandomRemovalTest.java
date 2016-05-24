@@ -2,13 +2,13 @@ package pl.edu.agh.io.pdptw.algorithm.removal;
 
 import org.junit.Test;
 
-import pl.edu.agh.io.pdptw.algorithm.generation.DataGenerator;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
 public class RandomRemovalTest {
 

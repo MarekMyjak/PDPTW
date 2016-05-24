@@ -10,10 +10,10 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
 public interface ConfigReader {
-	public List<Configuration> loadConfiguration(String configFilePath) 
+	List<Configuration> loadConfiguration(String configFilePath)
 			throws IllegalArgumentException, IOException, ParseException;
-	public List<Request> loadRequests(Configuration configuration) 
+	List<Request> loadRequests(Configuration configuration)
 			throws IOException, InvalidFileFormatException;
-	public List<Vehicle> loadVehicles(Configuration configuration) 
+	List<Vehicle> loadVehicles(Configuration configuration)
 			throws IOException, ParseException;
 }

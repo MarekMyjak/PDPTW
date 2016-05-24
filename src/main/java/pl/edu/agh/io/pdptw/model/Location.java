@@ -6,7 +6,7 @@ import lombok.ToString;
 
 @Data
 @AllArgsConstructor
-@ToString(includeFieldNames = true)
+@ToString()
 public class Location {
     private int x;
     private int y;

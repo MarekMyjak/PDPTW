@@ -1529,9 +1529,9 @@ return /******/ (function(modules) { // webpackBootstrap
   //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
   //! license : MIT
   //! momentjs.com
-
-  ;(function (global, factory) {
-       true ? module.exports = factory() :
+          
+  (function (global, factory) {
+                true ? module.exports = factory() :
       typeof define === 'function' && define.amd ? define(factory) :
       global.moment = factory()
   }(this, function () { 'use strict';
@@ -5564,7 +5564,7 @@ return /******/ (function(modules) { // webpackBootstrap
       return _moment;
 
   }));
-  /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)))
+  /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)(module)));
 
 /***/ },
 /* 4 */
@@ -5579,7 +5579,7 @@ return /******/ (function(modules) { // webpackBootstrap
   		module.webpackPolyfill = 1;
   	}
   	return module;
-  }
+  };
 
 
 /***/ },
@@ -5809,7 +5809,7 @@ return /******/ (function(modules) { // webpackBootstrap
   uuid.unparse = unparse;
 
   module.exports = uuid;
-  /* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+  /* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())));
 
 /***/ },
 /* 7 */
@@ -9846,9 +9846,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
   function Emitter(obj) {
     if (obj) return mixin(obj);
-  };
-
-  /**
+  }
+        /**
    * Mixin the emitter properties.
    *
    * @param {Object} obj
@@ -10013,9 +10012,8 @@ return /******/ (function(modules) { // webpackBootstrap
     this.x = x !== undefined ? x : 0;
     this.y = y !== undefined ? y : 0;
     this.z = z !== undefined ? z : 0;
-  };
-
-  /**
+  }
+        /**
    * Subtract the two provided points, returns a-b
    * @param {Point3d} a
    * @param {Point3d} b
@@ -10286,9 +10284,8 @@ return /******/ (function(modules) { // webpackBootstrap
     } else {
       this.loaded = true;
     }
-  };
-
-  /**
+  }
+        /**
    * Return the label
    * @return {string} label
    */
@@ -10839,9 +10836,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
     this._current = 0;
     this.setRange(start, end, step, prettyStep);
-  };
-
-  /**
+  }
+        /**
    * Set a new range: start, end and step.
    *
    * @param {Number} start     The start value
@@ -20352,12 +20348,12 @@ return /******/ (function(modules) { // webpackBootstrap
             // if dragged group was move upwards everything below should have an offset
             if (newOrder[curPos + newOffset] == draggedId) {
               newOffset = 1;
-              continue;
+              
             }
             // if dragged group was move downwards everything above should have an offset
             else if (origOrder[curPos + orgOffset] == draggedId) {
                 orgOffset = 1;
-                continue;
+                
               }
               // found a group (apart from dragged group) that has the wrong position -> switch with the
               // group at the position where other one should be, fix index arrays and continue
@@ -23951,8 +23947,8 @@ return /******/ (function(modules) { // webpackBootstrap
       label.style.right = x + 'px';
     } else {
       label.style.left = x + 'px';
-    };
-    label.className = 'vis-text vis-minor ' + className;
+    }
+      label.className = 'vis-text vis-minor ' + className;
     //label.title = title;  // TODO: this is a heavy operation
 
     return label;
@@ -23990,9 +23986,8 @@ return /******/ (function(modules) { // webpackBootstrap
       label.style.right = x + 'px';
     } else {
       label.style.left = x + 'px';
-    };
-
-    return label;
+    }
+      return label;
   };
 
   /**
@@ -24028,8 +24023,8 @@ return /******/ (function(modules) { // webpackBootstrap
     } else {
       line.style.left = x - props.minorLineWidth / 2 + 'px';
       line.className = 'vis-grid vis-vertical vis-minor ' + className;
-    };
-    line.style.width = width + 'px';
+    }
+      line.style.width = width + 'px';
 
     return line;
   };
@@ -41603,7 +41598,7 @@ return /******/ (function(modules) { // webpackBootstrap
           // if the user defined some levels but not all, alert and run without hierarchical layout
           if (undefinedLevel === true && definedLevel === true) {
             throw new Error('To use the hierarchical layout, nodes require either no predefined levels or levels have to be defined for all nodes.');
-            return;
+            
           } else {
             // define levels if undefined by the users. Based on hubsize.
             if (undefinedLevel === true) {
@@ -46219,4 +46214,3 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ }
 /******/ ])
 });
-;

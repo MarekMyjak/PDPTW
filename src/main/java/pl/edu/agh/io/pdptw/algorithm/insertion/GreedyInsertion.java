@@ -8,7 +8,7 @@ import java.util.List;
 public class GreedyInsertion implements InsertionAlgorithm {
 	
 	/* The returned value is equal to the position
-     * of the newly insrted pickup request in the
+     * of the newly inserted pickup request in the
      * requests pool */
 
 	@Override

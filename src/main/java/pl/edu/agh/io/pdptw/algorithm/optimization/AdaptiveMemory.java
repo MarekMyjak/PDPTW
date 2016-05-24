@@ -73,7 +73,7 @@ public class AdaptiveMemory {
 							&& foundRoute.get().getRequests().size()
 								== r.getRequests().size()) {
 						
-						/* first let's checl the instance 
+						/* first let's check the instance
 						 * equality (identity) 
 						 * if the routes are not
 						 * identical let's check
@@ -150,7 +150,7 @@ public class AdaptiveMemory {
 							&& foundRoute.get().getRequests().size()
 								== r.getRequests().size()) {
 						
-						/* first let's checl the instance 
+						/* first let's check the instance
 						 * equality (identity) 
 						 * if the routes are not
 						 * identical let's check
@@ -249,7 +249,7 @@ public class AdaptiveMemory {
 	 * 
 	 * example: 
 	 * 
-	 *  treshold = 0.7, two iterations
+	 *  threshold = 0.7, two iterations
 	 * 
 	 * 1. drawn random value 0.55 <= 0.7 ? OK
 	 * move the sector end index up
@@ -277,11 +277,11 @@ public class AdaptiveMemory {
 	 * etc.
 	 * */
 	
-	public Solution createRandomSolution(double treshold, int iterationsNo) 
+	public Solution createRandomSolution(double threshold, int iterationsNo) 
 			throws IllegalArgumentException {
 		
-		if (treshold < 0 || treshold >= 1) {
-			throw new IllegalArgumentException("Invalid treshold value."
+		if (threshold < 0 || threshold >= 1) {
+			throw new IllegalArgumentException("Invalid threshold value."
 					+ " Should belong to the range [0, 1)");
 		}
 		if (iterationsNo < 0) {
@@ -297,7 +297,7 @@ public class AdaptiveMemory {
 				.collect(Collectors.toList());
 		
 		List<Integer> solutionIndices = new ArrayList<>(sortedSolutions.size());
-		Map<Integer, List<Integer>> routeIndicesForSoulution = new HashMap<>();
+		Map<Integer, List<Integer>> routeIndicesForSolution = new HashMap<>();
 		IntStream.range(0, sortedSolutions.size()).forEach(i -> solutionIndices.add(i));
 		
 		for (Integer i : solutionIndices) {
@@ -314,7 +314,7 @@ public class AdaptiveMemory {
 					.boxed()
 					.collect(Collectors.toList());
 			
-			routeIndicesForSoulution.put(i, routeIds);
+			routeIndicesForSolution.put(i, routeIds);
 		}
 		
 		if (solutions.size() > 0) {
@@ -335,7 +335,7 @@ public class AdaptiveMemory {
 				int sectorEnd = solutionIndices.size() - 1;
 				
 				for (int i = 0; i < iterationsNo; i++) {
-					if (Math.random() <= treshold) {
+					if (Math.random() <= threshold) {
 						sectorEnd -= (sectorEnd - sectorStart) / 2; 
 					} else {
 						sectorStart += (sectorEnd - sectorStart) / 2; 
@@ -351,7 +351,7 @@ public class AdaptiveMemory {
 						solutionIndices.get(solutionIndex));
 				
 				List<Integer> routeIndices = 
-						routeIndicesForSoulution.get(solutionIndex);
+						routeIndicesForSolution.get(solutionIndex);
 				int routeIndex = (int) (Math.random() 
 						* routeIndices.size());
 				
@@ -416,7 +416,7 @@ public class AdaptiveMemory {
 					/* same situation as above */
 					
 					solutionIndices.remove(solutionIndex);
-					routeIndicesForSoulution.remove(solutionIndex);
+					routeIndicesForSolution.remove(solutionIndex);
 				}
 			}
 			

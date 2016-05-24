@@ -10,7 +10,8 @@ public class TotalVehiclesObjective implements Objective {
 
 	@Override
 	public double calculate(Solution solution) {
-		double result = solution.getVehicles().stream()
+
+		return (double) solution.getVehicles().stream()
 			.filter(v -> {
 				Route route = v.getRoute();
 				return (route.getRequests().size()
@@ -18,8 +19,6 @@ public class TotalVehiclesObjective implements Objective {
 			})
 			.collect(Collectors.toList())
 			.size();
-
-		return result;
 	}
 
 	@Override

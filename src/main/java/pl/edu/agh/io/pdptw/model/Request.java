@@ -3,7 +3,6 @@ package pl.edu.agh.io.pdptw.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @AllArgsConstructor
 @EqualsAndHashCode(exclude={"sibling"})

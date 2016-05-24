@@ -11,7 +11,6 @@ import lombok.ToString;
 @Getter
 @ToString
 @EqualsAndHashCode
-
 public class Solution {
 	private final List<Vehicle> vehicles;
 	@Setter private double objectiveValue;
@@ -32,7 +31,7 @@ public class Solution {
 	}
 	
 	public List<Request> getRequests() {
-		return (List<Request>) getRoutes().stream()
+		return getRoutes().stream()
 				.flatMap(r -> r.getRequests().stream())
 				.collect(Collectors.toList());
 	}

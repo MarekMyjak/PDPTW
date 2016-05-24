@@ -42,7 +42,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 		
 		/* sort requests by the increasing polar angle */
 		
-		List<PickupRequest> pickupRequests = (List<PickupRequest>) requestPool.stream()
+		List<PickupRequest> pickupRequests = requestPool.stream()
 				.filter(r -> r.getType() == RequestType.PICKUP)
 				.map(r -> (PickupRequest) r)
 				.sorted((r1, r2) -> {

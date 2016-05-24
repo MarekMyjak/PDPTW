@@ -1,25 +1,14 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
-
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
-import pl.edu.agh.io.pdptw.model.DeliveryRequest;
-import pl.edu.agh.io.pdptw.model.Location;
-import pl.edu.agh.io.pdptw.model.PickupRequest;
-import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.Route;
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.model.Vehicle;
+import pl.edu.agh.io.pdptw.model.*;
+
+import java.util.Arrays;
 
 public class AdaptiveMemoryContainsSolutionTest {
 

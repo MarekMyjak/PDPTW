@@ -9,7 +9,7 @@ public enum RequestType {
 	
 	private final String name;
 	
-	private RequestType(String name) {
+	RequestType(String name) {
 		this.name = name;
 	}
 }

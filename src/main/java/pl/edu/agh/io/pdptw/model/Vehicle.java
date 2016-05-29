@@ -2,6 +2,7 @@ package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -222,6 +223,15 @@ public class Vehicle {
 		
 		representation += "]";
 		return representation;
+	}
+	
+	public Vehicle createShallowCopy() {
+		Vehicle copy = new Vehicle(id, maxCapacity, startLocation);
+		copy.setCurrentlyLoaded(currentlyLoaded);
+		copy.setLocation(location);
+		copy.setRoute(route);
+		
+		return copy;
 	}
     
 }

@@ -40,10 +40,10 @@ public class DataGenerator {
 			
 			if (i % 2 == 0) {
 				request = new PickupRequest(
-						i + 1, location, volume, curStartTime, curEndTime, serviceTime);
+						(int) (Math.random() * 1000), location, volume, curStartTime, curEndTime, serviceTime);
 			} else {
 				request = new DeliveryRequest(
-						i + 1, location, -volume, curStartTime, curEndTime, serviceTime);
+						prevRequest.getId() + 1, location, -volume, curStartTime, curEndTime, serviceTime);
 				prevRequest.setSibling(request);
 				request.setSibling(prevRequest);
 			}
@@ -64,7 +64,7 @@ public class DataGenerator {
 	}
 	
 	public static Vehicle generateVehicle(int n) {
-		Vehicle v = new Vehicle("genericTruc" + LocalTime.now(), 200, new Location(0, 0));
+		Vehicle v = new Vehicle("genericTruc" + ((int) (Math.random() * 1000)), 200, new Location(0, 0));
 		v.setRoute(generateRoute(n));
 		
 		return v;

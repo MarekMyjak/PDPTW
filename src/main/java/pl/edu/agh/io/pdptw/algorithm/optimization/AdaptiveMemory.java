@@ -41,7 +41,12 @@ public class AdaptiveMemory {
 	 * of the routes on the routes list 
 	 * of the solution
 	 * e.g.
-	 * solution made of three routes
+	 * solution made of three routes 
+	 * 
+	 * (actually a solution is made of
+	 * vehicles and these vahicles have
+	 * routes bound to them)
+	 * 
 	 * s1 = [r1, r2, r3]
 	 * s2 = [r3, r1, r2]
 	 * 
@@ -50,6 +55,7 @@ public class AdaptiveMemory {
 	 * we assume that AdaptiveMemory.contains(s2)
 	 * should return true - order of the routes 
 	 * isn't important
+	 * 
 	 *  */
 	
 	public boolean contains(Solution solution) {
@@ -260,7 +266,7 @@ public class AdaptiveMemory {
 	 * 
 	 * example: 
 	 * 
-	 *  treshold = 0.7, two iterations
+	 * treshold = 0.7, two iterations
 	 * 
 	 * 1. drawn random value 0.55 <= 0.7 ? OK
 	 * move the sector end index up
@@ -286,6 +292,43 @@ public class AdaptiveMemory {
 	 * 4 <- sector end
 	 * 
 	 * etc.
+	 * 
+	 * note that we use auxilliary data structures to
+	 * keep track on which vehicles have already been
+	 * used and which routes share requests
+	 * with those already added
+	 * 
+	 * solutionIndices: List - inidces of the solutions
+	 * in the sortedSolutions list
+	 * 
+	 * vehicleIndicesForSoulution: Map
+	 * key: solution index in the sortedSolutions list
+	 * value: a list of indices of vehicles for the 
+	 * corresponding solution
+	 * 
+	 * requestIndices: List
+	 * stores indices of the requests left to insert
+	 * note that values of the indices depend on the
+	 * order of the mentioned requests in the first
+	 * solution on the sortedSolutions list
+	 * 
+	 * example:
+	 * 
+	 * sortedSolutions: [s1, s2, s3]
+	 * solutionIndices: [ 0,  1,  2]
+	 * vehicleIndicesForSoulution: 
+	 * 0 : [ 0,  1,  2]
+	 * s1: [v1, v2, v3]
+	 * 
+	 * 1 : [ 0,  1]
+	 * s2: [v4, v5]
+	 * 
+	 * 2 : [ 0,   1]
+	 * s3: [v9, v11]
+	 * 
+	 * requestIndices: [ 0, 1,   2, 3, 4, 5,   6, 7]  (indices)
+	 *             s1: [[1, 2], [3, 5, 4, 6], [7, 8]] (requests ids)
+	 *                   v1      v2            v3	  (vehicles)
 	 * */
 	
 	public Solution createRandomSolution(double treshold, int iterationsNo) 
@@ -308,7 +351,7 @@ public class AdaptiveMemory {
 				.collect(Collectors.toList());
 		
 		List<Integer> solutionIndices = new ArrayList<>(sortedSolutions.size());
-		Map<Integer, List<Integer>> routeIndicesForSoulution = new HashMap<>();
+		Map<Integer, List<Integer>> vehicleIndicesForSoulution = new HashMap<>();
 		IntStream.range(0, sortedSolutions.size()).forEach(i -> solutionIndices.add(i));
 		
 		for (Integer i : solutionIndices) {
@@ -325,7 +368,7 @@ public class AdaptiveMemory {
 					.boxed()
 					.collect(Collectors.toList());
 			
-			routeIndicesForSoulution.put(i, routeIds);
+			vehicleIndicesForSoulution.put(i, routeIds);
 		}
 		
 		if (solutions.size() > 0) {
@@ -362,7 +405,7 @@ public class AdaptiveMemory {
 						solutionIndices.get(solutionIndex));
 				
 				List<Integer> routeIndices = 
-						routeIndicesForSoulution.get(solutionIndex);
+						vehicleIndicesForSoulution.get(solutionIndex);
 				int routeIndex = (int) (Math.random() 
 						* routeIndices.size());
 				
@@ -427,7 +470,7 @@ public class AdaptiveMemory {
 					/* same situation as above */
 					
 					solutionIndices.remove(solutionIndex);
-					routeIndicesForSoulution.remove(solutionIndex);
+					vehicleIndicesForSoulution.remove(solutionIndex);
 				}
 			}
 			
@@ -449,3 +492,5 @@ public class AdaptiveMemory {
 		return newSolution;
 	}
 }
+
+

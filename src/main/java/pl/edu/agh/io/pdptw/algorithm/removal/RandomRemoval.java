@@ -20,7 +20,7 @@ public class RandomRemoval implements RemovalAlgorithm {
 		
 		Route route = vehicle.getRoute();
 		List<Request> requests = route.getRequests();
-		List<PickupRequest> pickupRequests = (List<PickupRequest>) requests.stream()
+		List<PickupRequest> pickupRequests = requests.stream()
 				.filter(r -> r.getType() == RequestType.PICKUP)
 				.map(r -> (PickupRequest) r)
 				.collect(Collectors.toList());

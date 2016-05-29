@@ -38,7 +38,7 @@ public class DefaultConfigReader implements ConfigReader {
 		try (
 			BufferedReader br = new BufferedReader(
 					new InputStreamReader(
-						new FileInputStream(configFilePath)));
+						new FileInputStream(configFilePath)))
 		) {
 			StringBuilder builder = new StringBuilder();
 			String line;
@@ -49,7 +49,7 @@ public class DefaultConfigReader implements ConfigReader {
 			
 			JSONObject jsonConfig = (JSONObject) parser.parse(builder.toString());
 			JSONArray tests = (JSONArray) jsonConfig.get("tests");
-			
+
 			for (int i = 0; i < tests.size(); i++) {
 				JSONObject test = (JSONObject) tests.get(i);
 				String requestsPath = (String) test.get("requestsPath");
@@ -57,14 +57,14 @@ public class DefaultConfigReader implements ConfigReader {
 				String outputPath = (String) test.get("outputPath");
 				boolean isDynamic = (boolean) test.get("dynamic");
 				JSONObject algorithms = (JSONObject) test.get("algorithms");
-				
+
 				String generationAlgorithm = (String) algorithms.get("generation");
 				String insertionAlgorithm = (String) algorithms.get("insertion");
 				String removalAlgorithm = (String) algorithms.get("removal");
 				String optimizationAlgorithm = (String) algorithms.get("optimization");
 				String objective = (String) algorithms.get("objective");
 				String scheduler = (String) algorithms.get("scheduler");
-				
+
 				AlgorithmsDescription description = new AlgorithmsDescription(
 					generationAlgorithm,
 					insertionAlgorithm,
@@ -72,7 +72,7 @@ public class DefaultConfigReader implements ConfigReader {
 					optimizationAlgorithm,
 					objective,
 					scheduler);
-				
+
 				Injector injector = Guice.createInjector(new AlgorithmModule(description));
 				AlgorithmConfiguration algorithmConfig = injector.getInstance(AlgorithmConfiguration.class);
 				Configuration configuration = new Configuration(
@@ -81,7 +81,7 @@ public class DefaultConfigReader implements ConfigReader {
 						outputPath,
 						isDynamic,
 						algorithmConfig);
-				
+
 				configurations.add(configuration);
 			}
 		}
@@ -106,7 +106,7 @@ public class DefaultConfigReader implements ConfigReader {
 		};
 		
 		try (
-			Scanner sc = new Scanner(requestsFile);
+			Scanner sc = new Scanner(requestsFile)
 		) {
 			int vehiclesNo = sc.nextInt();
 			int totalCapacity = sc.nextInt();
@@ -212,7 +212,7 @@ public class DefaultConfigReader implements ConfigReader {
 			lineCounter = 0;
 			
 			try (
-				Scanner sc = new Scanner(arrivalTimesFile);
+				Scanner sc = new Scanner(arrivalTimesFile)
 			) {
 				while (sc.hasNextInt()) {
 					int arrivalTime = sc.nextInt();
@@ -235,7 +235,7 @@ public class DefaultConfigReader implements ConfigReader {
 		List<Vehicle> result = new ArrayList<>();
 		try (
 			InputStreamReader in = new InputStreamReader(
-				new FileInputStream(vehiclesFilePath));		
+				new FileInputStream(vehiclesFilePath))
 		) {
 			JSONObject vehiclesConfig = (JSONObject) parser.parse(in);
 			JSONArray vehicles = (JSONArray) vehiclesConfig.get("vehicles");

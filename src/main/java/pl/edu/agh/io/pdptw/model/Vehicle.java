@@ -30,7 +30,7 @@ public class Vehicle {
 			Location startLocation) {
 		
 		this(id, maxCapacity, 0, startLocation, startLocation, 
-				new Route(new ArrayList<Request>()));
+				new Route(new ArrayList<>()));
 	}
 	
 	public boolean isInsertionPossible(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {

@@ -1,9 +1,8 @@
 package pl.edu.agh.io.pdptw.configuration;
 
-import lombok.Data;
+import com.google.inject.Inject;
 import lombok.Value;
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.generation.GreedyGeneration;
 import pl.edu.agh.io.pdptw.algorithm.generation.SweepGeneration;
 import pl.edu.agh.io.pdptw.algorithm.insertion.GreedyInsertion;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
@@ -15,8 +14,6 @@ import pl.edu.agh.io.pdptw.algorithm.removal.RemovalAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.removal.WorstRemoval;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
-
-import com.google.inject.Inject;
 
 @Value
 public class AlgorithmConfiguration {

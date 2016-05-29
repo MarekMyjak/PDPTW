@@ -1,15 +1,14 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.IntStream;
-
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Solution;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @ToString
 @EqualsAndHashCode

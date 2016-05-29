@@ -1,19 +1,12 @@
 package pl.edu.agh.io.pdptw.test.util;
 
+import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.model.*;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import pl.edu.agh.io.pdptw.algorithm.removal.RandomRemoval;
-import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
-import pl.edu.agh.io.pdptw.configuration.Configuration;
-import pl.edu.agh.io.pdptw.model.DeliveryRequest;
-import pl.edu.agh.io.pdptw.model.Location;
-import pl.edu.agh.io.pdptw.model.PickupRequest;
-import pl.edu.agh.io.pdptw.model.Request;
-import pl.edu.agh.io.pdptw.model.Route;
-import pl.edu.agh.io.pdptw.model.Solution;
-import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class DataGenerator {
 	public static List<Request> generateRequestsPool(int requestsNo) {
@@ -64,7 +57,11 @@ public class DataGenerator {
 	}
 	
 	public static Vehicle generateVehicle(int n) {
+<<<<<<< HEAD
 		Vehicle v = new Vehicle("genericTruc" + ((int) (Math.random() * 1000)), 200, new Location(0, 0));
+=======
+		Vehicle v = new Vehicle("genericTruck" + LocalTime.now(), 200, new Location(0, 0));
+>>>>>>> 48ff0d92ac94c4eb29c738f466590d7857f4abf4
 		v.setRoute(generateRoute(n));
 		
 		return v;

@@ -62,7 +62,7 @@ public class DataGenerator {
 	}
 	
 	public static Vehicle generateVehicle(int n) {
-		Vehicle v = new Vehicle("genericTruc" + ((int) (Math.random() * 1000)), 200, new Location(0, 0));
+		Vehicle v = new Vehicle("genericTruck" + ((int) (Math.random() * 1000)), 200, new Location(0, 0));
 		v.setRoute(generateRoute(n));
 		
 		return v;

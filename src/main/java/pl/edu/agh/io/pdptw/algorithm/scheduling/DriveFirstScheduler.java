@@ -60,4 +60,21 @@ public class DriveFirstScheduler implements Scheduler {
 						
 		return result;
 	}
+
+	/* note that we don't guarantee here
+	 * that after updating the realization time
+	 * it will satisfy the time window constraint
+	 * (it may be bigger than the end of the time window!)
+	 * because it is meant to be used to check update
+	 * the pickup request  */
+	
+	@Override
+	public void updateRequestRealizationTime(Request req, int time) {
+		
+		/* if the new realization time  */
+		
+		if (req.getRealizationTime() < time) {
+			req.setRealizationTime(time);
+		}
+	}
 }

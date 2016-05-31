@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.Solution;
 
 import java.util.ArrayList;
@@ -39,14 +40,15 @@ public class TabuList {
 		return isForbidden;
 	}
 	
-	public boolean isForbiddenByObjective(double objectiveValue, int iterationNo) {
+	public boolean isForbiddenByObjective(Solution solution, int iterationNo) {
 		boolean isForbidden = true;
-		int position = getPositionForObjective(objectiveValue);
+		int position = getPositionForObjective(solution.getObjectiveValue());
 		
 		if (iterationNo >= tabuStatusExpirationTimes.get(position)) {
-			tabuStatusExpirationTimes.set(position, DEFAULT_ITERATION_NO);
+			tabuStatusExpirationTimes.set(position, DEFAULT_ITERATION_NO); 
 			isForbidden = false;
 		}
+		
 		return isForbidden;
 	}
 	
@@ -67,6 +69,7 @@ public class TabuList {
 		return solutionNotFound;
 	}
 	
+	
 	public boolean setAsTabuForObjective(double objectiveValue, int iterationNo) {
 		boolean solutionNotFound = true;
 		int position = getPositionForObjective(objectiveValue);
@@ -78,5 +81,17 @@ public class TabuList {
 		}
 		
 		return solutionNotFound;
+	}
+
+	/* remove from the tabu list all entries
+	 * corresponding to the solutions which
+	 * tabu status has expired */
+	
+	public void update(int iterationNo) {
+		for (int i = 0; i < tabuStatusExpirationTimes.size(); i++) {
+			if (tabuStatusExpirationTimes.get(i) <= iterationNo) {
+				tabuStatusExpirationTimes.set(i, DEFAULT_ITERATION_NO);
+			}
+		}
 	}
 }

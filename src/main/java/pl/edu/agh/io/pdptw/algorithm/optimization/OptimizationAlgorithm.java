@@ -4,5 +4,5 @@ import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.Solution;
 
 public interface OptimizationAlgorithm {
-	void optimize(Solution solution, Configuration configuration);
+	public Solution optimize(Solution solution, Configuration configuration);
 }

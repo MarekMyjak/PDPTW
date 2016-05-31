@@ -13,7 +13,8 @@ function parseText(text) {
         console.log(color);
         var from = 0;
         vechicle.routes.forEach(function (route) {
-            dataSet.push({id: route.id, label: "x:" + route.location.x + ", y:" + route.location.y, color: color,
+//            dataSet.push({id: route.id, label: "x:" + route.location.x + ", y:" + route.location.y, color: color,
+        	 dataSet.push({id: route.id, label: "" + route.id , color: color,
                 x: route.location.x*scale, y: route.location.y*scale, title: "arrivalTime:" + route.arrivalTime + ", type:" + route.type});
             edgeSet.push({from: from, to: route.id, color: color, arrows:'to'});
             from = route.id;

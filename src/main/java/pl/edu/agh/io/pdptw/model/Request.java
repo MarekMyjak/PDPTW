@@ -82,9 +82,20 @@ public class Request {
 	
 	@Override
 	public String toString() {
-		return String.format("id: %d, type: %s, loc: %s, tstart: %d, realt: %d, tend: %d, servt: %d,"
+		return String.format("id: %d, type: %s, loc: %s, earliest: %d, realt: %d, latest: %d, realfinished: %d, servt: %d,"
 				+ " sid: %s, v: %d", 
-				id, type.toString(), location, timeWindowStart, realizationTime, timeWindowEnd, serviceTime,
-				(sibling != null) ? "" + sibling.getId() : "NO SIBLING", volume);
+				id, type.toString(), location, timeWindowStart, realizationTime, timeWindowEnd,
+				realizationTime + serviceTime, serviceTime, (sibling != null) ? "" + sibling.getId() : "NO SIBLING", volume);
+	}
+	
+	/* this method is meant to be used only
+	 * if the copy of the request data is needed
+	 * (especially when we need to manipulate the time
+	 * parameters) */
+	
+	public Request createShallowCopy() {
+		return new Request(id, location, volume,
+				timeWindowStart, timeWindowEnd, serviceTime, realizationTime,
+				arrivalTime, sibling, type);
 	}
 }

@@ -2,7 +2,6 @@ package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
 
 @Data
@@ -24,7 +24,7 @@ public class Vehicle {
     private Route route;
     
     /* note the static keyword */
-    @Setter @Getter private static Scheduler scheduler;
+    @Setter @Getter private static Scheduler scheduler = new DriveFirstScheduler();
     
 	public Vehicle(String id, Integer maxCapacity,
 			Location startLocation) {
@@ -32,6 +32,18 @@ public class Vehicle {
 		this(id, maxCapacity, 0, startLocation, startLocation, 
 				new Route(new ArrayList<>()));
 	}
+	
+	/* the feasibility of the insertion of the new request pair
+	 * is checked as follows: 
+	 * 1. look for the insertion position of the pickup request
+	 * and calculate the total volume of the products being transported
+	 * 2. add the volume of the products delivered while realizing 
+	 * the new pickup - delivery requests to the total volume 
+	 * 3. propagate the change of the realization times after 
+	 * inserting the pickup requests (it's not actually inserted, 
+	 * we only calculate the change of the time parameters)
+	 * 4. find the insertion position of the new delivery request
+	 * 5. continue propagating the changes */
 	
 	public boolean isInsertionPossible(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {
 		List<Request> requests = route.getRequests();
@@ -54,6 +66,7 @@ public class Vehicle {
 		boolean insertionPossible = true;
 		Request prev = null;
 		Request cur = null;
+		Request pickupCopy = pickupRequest.createShallowCopy();
 		double totalVolume = 0;
 		Iterator<Request> it = requests.iterator();
 		int prevOriginalRealizationTime = 0;
@@ -71,17 +84,34 @@ public class Vehicle {
 		}
 		
 		if (prev != null) {
-			scheduler.updateSuccessor(prev, pickupRequest);
-			insertionPossible = insertionPossible
-					&& (pickupRequest.getRealizationTime() <= pickupRequest.getTimeWindowEnd());
+			scheduler.updateSuccessor(prev, pickupCopy);
 					
+		} else {
+			/* if the pickup request will potentially be
+			 * the first one on the route we should
+			 * update it's realization time based
+			 * on the distance between the initial vehicle's
+			 * position and the request's location */
+			
+			scheduler.updateRequestRealizationTime(pickupCopy, 
+					(int) Location.calculateDistance(
+							this.startLocation, pickupCopy.getLocation()));
 		}
 		
-		totalVolume += pickupRequest.getVolume();
-		insertionPossible = insertionPossible && (totalVolume <= maxCapacity);
-		prev = pickupRequest;
+		totalVolume += pickupCopy.getVolume();
+		insertionPossible = insertionPossible
+				&& (pickupCopy.getRealizationTime() <= pickupCopy.getTimeWindowEnd())
+				&& (totalVolume <= maxCapacity);
+		
+		prev = pickupCopy;
 		prevOriginalRealizationTime = pickupRequest.getRealizationTime();
 		counter++;
+		
+		/* propagate the potential change of the 
+		 * realization times on the whole route
+		 * 
+		 * note the need for restoring the original 
+		 * realization times after finishing that! */
 		
 		while (insertionPossible 
 				&& it.hasNext() 
@@ -99,20 +129,16 @@ public class Vehicle {
 			counter++;
 		}
 		
-		if (prev != null) {
-			scheduler.updateSuccessor(prev, deliveryRequest);
-			prev.setRealizationTime(prevOriginalRealizationTime);
-			insertionPossible = insertionPossible 
-					&& (deliveryRequest.getRealizationTime() <= deliveryRequest.getTimeWindowEnd());
-		}
+		curOriginalRealizationTime = deliveryRequest.getRealizationTime();
+		scheduler.updateSuccessor(prev, deliveryRequest);
+		prev.setRealizationTime(prevOriginalRealizationTime);
+		prevOriginalRealizationTime = curOriginalRealizationTime;
+		totalVolume += deliveryRequest.getVolume();
+		prev = deliveryRequest;
 		
-		if (insertionPossible) {
-			totalVolume += deliveryRequest.getVolume();
-			insertionPossible = insertionPossible && (totalVolume <= maxCapacity);
-			prev = deliveryRequest;
-			prevOriginalRealizationTime = deliveryRequest.getRealizationTime();
-			counter++;
-		}
+		insertionPossible = insertionPossible 
+				&& (deliveryRequest.getRealizationTime() <= deliveryRequest.getTimeWindowEnd())
+				&& (totalVolume <= maxCapacity);
 		
 		while (insertionPossible 
 				&& it.hasNext()) {
@@ -133,10 +159,12 @@ public class Vehicle {
 			prev.setRealizationTime(prevOriginalRealizationTime);
 		}
 		
-		if (!insertionPossible) {
-			pickupRequest.setRealizationTime(pickupRequest.getTimeWindowStart());
-			deliveryRequest.setRealizationTime(deliveryRequest.getTimeWindowStart());
-		}
+		/* this section is not needed anymore */
+		
+//		if (!insertionPossible) {
+//			pickupRequest.setRealizationTime(pickupRequest.getTimeWindowStart());
+//			deliveryRequest.setRealizationTime(deliveryRequest.getTimeWindowStart());
+//		}
 		
 		return insertionPossible;
 	}
@@ -161,6 +189,10 @@ public class Vehicle {
 		assert deliveryPosition < requests.size();
 		
 		Request pickup = requests.remove(pickupPosition);
+		Request delivery = pickup.getSibling();
+		
+		pickup.setRealizationTime(pickup.getTimeWindowStart());
+		delivery.setRealizationTime(delivery.getTimeWindowStart());
 		
 		/* [deliveryPosition -1] because after removing the pickup request
 		 * the position of the delivery request is decremented
@@ -179,7 +211,12 @@ public class Vehicle {
 		assert pickupPosition >= 0;
 		assert pickupPosition < requests.size();
 		
-		Request deliveryRequest = requests.get(pickupPosition).getSibling();
+		Request pickup = requests.get(pickupPosition);
+		Request delivery = pickup.getSibling();
+		
+		pickup.setRealizationTime(pickup.getTimeWindowStart());
+		delivery.setRealizationTime(delivery.getTimeWindowStart());
+
 		requests.remove(pickupPosition);
 		
 		/* [deliveryPosition -1] because after removing the pickup request
@@ -187,10 +224,10 @@ public class Vehicle {
 		 * by 1. Note that pickup request is always added
 		 * to the route before the corresponding delivery request. */
 		
-		requests.remove(deliveryRequest);
+		requests.remove(delivery);
 		updateRealizationTimes();
 		
-		return deliveryRequest.getSibling();
+		return pickup;
 	}
 	
 	public RequestPositions removeRequest(PickupRequest pickupRequest) {
@@ -204,6 +241,10 @@ public class Vehicle {
 		requests.remove(pickupRequest);
 		requests.remove(pickupRequest.getSibling());
 		updateRealizationTimes();
+		
+		pickupRequest.setRealizationTime(pickupRequest.getTimeWindowStart());
+		pickupRequest.getSibling().setRealizationTime(
+				pickupRequest.getSibling().getTimeWindowStart());
 		
 		return new RequestPositions(pickupPosition, deliveryPosition);
 	}

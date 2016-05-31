@@ -4,14 +4,21 @@ package pl.edu.agh.io.pdptw.logging;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class LoggingUtils {
 	private static Logger logger = LogManager
 			.getLogger(LoggingUtils.class.getName());
 	private static StringWriter sw = new StringWriter();
 	private static PrintWriter pw = new PrintWriter(sw);
+	
+	static {
+		BasicConfigurator.configure();
+		LogManager.getRootLogger().setLevel(Level.INFO);
+	}
 		
 	public static void info(Object message) {
 		logger.info(message.toString());

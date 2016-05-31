@@ -6,5 +6,6 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 public interface Scheduler {
 	void scheduleRequests(Vehicle vehicle);
 	void updateSuccessor(Request prev, Request cur);
+	void updateRequestRealizationTime(Request req, int time);
 	int getSuccessorRealizationTime(Request prev, Request cur);
 }

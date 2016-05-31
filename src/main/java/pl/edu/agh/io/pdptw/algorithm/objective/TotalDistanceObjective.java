@@ -24,19 +24,25 @@ public class TotalDistanceObjective implements Objective {
 		if (it.hasNext()) {
 			Request prevRequest = it.next();
 			
+			/* add the distance between the start location 
+			 * and the location of the first reguest */
+			
+			result += Location.calculateDistance(
+					prevRequest.getLocation(), vehicle.getStartLocation());
+			
 			while (it.hasNext()) {
 				Request curRequest = it.next();
-				Location l1 = prevRequest.getLocation();
-				Location l2 = curRequest.getLocation();
-				
-				double xDiff = l1.getX()
-						- l2.getX();
-				double yDiff = l1.getY()
-						- l2.getY();
-				
-				result += Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+				result += Location.calculateDistance(
+						prevRequest.getLocation(), curRequest.getLocation());
 				prevRequest = curRequest;
 			}
+			
+			/* add the distance between the last request location 
+			 * and the vehicle's start location */
+			
+			result += Location.calculateDistance(
+					prevRequest.getLocation(), vehicle.getStartLocation());
+			
 		}
 		
 		return result;

@@ -10,9 +10,12 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import javax.swing.ScrollPaneLayout;
+
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.RequestType;
@@ -34,29 +37,9 @@ public class AdaptiveMemory {
 		this.insertionAlg = config.getAlgorithms().getInsertionAlgorithm();
 	}
 	
-	/* this method is responsible for telling
-	 * if there is in the solutions list a solution
-	 * that is made of the same set of routes
-	 * we need to consider different permutations
-	 * of the routes on the routes list 
-	 * of the solution
-	 * e.g.
-	 * solution made of three routes 
-	 * 
-	 * (actually a solution is made of
-	 * vehicles and these vahicles have
-	 * routes bound to them)
-	 * 
-	 * s1 = [r1, r2, r3]
-	 * s2 = [r3, r1, r2]
-	 * 
-	 * solutions = [s1]
-	 * 
-	 * we assume that AdaptiveMemory.contains(s2)
-	 * should return true - order of the routes 
-	 * isn't important
-	 * 
-	 *  */
+	/* a simplified version of checking whether
+	 * the solution has already been added to the 
+	 * solutions list */
 	
 	public boolean contains(Solution solution) {
 		boolean sameSolutionsFound = false;
@@ -66,146 +49,11 @@ public class AdaptiveMemory {
 			
 			Solution s = solutionsIt.next();
 			
-			/* if objective values for the solutions
-			 * are unequal they must be different;
-			 * if they're equal we need to check each route */
-			
 			if (Math.abs(
-					objective.calculate(solution) 
-					- objective.calculate(s))
+					solution.getObjectiveValue() - s.getObjectiveValue())
 				<= MAX_OBJECTIVE_DIFFERENCE) {
 				
-				boolean sameRoutes = true;
-				Iterator<Route> routesIt = solution.getRoutes().iterator();
-				
-				while (routesIt.hasNext() && sameRoutes) {
-					Route r = routesIt.next();
-					Request firstRequest = r.getRequests().get(0);
-					Optional<Route> foundRoute = s.getRoutes()
-							.stream()
-							.filter(route -> route.getRequests().get(0).equals(firstRequest))
-							.findFirst();
-							
-					if (foundRoute.isPresent() 
-							&& foundRoute.get().getRequests().size()
-								== r.getRequests().size()) {
-						
-						/* first let's check the instance
-						 * equality (identity) 
-						 * if the routes are not
-						 * identical let's check
-						 * their requests */
-						
-						if (r != foundRoute.get()) {
-							Iterator<Request> foundIt = foundRoute.get()
-									.getRequests()
-									.iterator();
-							Iterator<Request> testedIt = r.getRequests().iterator();
-							boolean sameRequests = true;
-							
-							while (testedIt.hasNext()
-									&& foundIt.hasNext()
-									&& sameRequests) {
-								
-								sameRequests = testedIt.next().equals(foundIt.next());
-							}
-							
-							/* at this moment we are
-							 * sure that these two routes
-							 * are not same */
-							
-							sameRoutes = sameRequests;
-						}
-						
-					} else {
-						sameRoutes = false;
-					}
-				/* check_same_routes_loop */
-				} 
-				
-				sameSolutionsFound = sameRoutes;
-				
-			/* same objective value */
-				
-			} else {
-				sameSolutionsFound = false;
-			}
-		}
-		
-		return sameSolutionsFound;
-	}
-	
-	public boolean containsWithObjective(Solution solution, double objectiveValue) {
-		boolean sameSolutionsFound = false;
-		Iterator<Solution> solutionsIt = solutions.iterator();
-		
-		while (solutionsIt.hasNext() && !sameSolutionsFound) {
-			
-			Solution s = solutionsIt.next();
-			
-			/* if objective values for the solutions
-			 * are unequal they must be different;
-			 * if they're equal we need to check each route */
-			
-			if (Math.abs(
-					objectiveValue 
-					- objective.calculate(s))
-				<= MAX_OBJECTIVE_DIFFERENCE) {
-				
-				boolean sameRoutes = true;
-				Iterator<Route> routesIt = solution.getRoutes().iterator();
-				
-				while (routesIt.hasNext() && sameRoutes) {
-					Route r = routesIt.next();
-					Request firstRequest = r.getRequests().get(0);
-					Optional<Route> foundRoute = s.getRoutes()
-							.stream()
-							.filter(route -> route.getRequests().get(0).equals(firstRequest))
-							.findFirst();
-							
-					if (foundRoute.isPresent() 
-							&& foundRoute.get().getRequests().size()
-								== r.getRequests().size()) {
-						
-						/* first let's check the instance
-						 * equality (identity) 
-						 * if the routes are not
-						 * identical let's check
-						 * their requests */
-						
-						if (r != foundRoute.get()) {
-							Iterator<Request> foundIt = foundRoute.get()
-									.getRequests()
-									.iterator();
-							Iterator<Request> testedIt = r.getRequests().iterator();
-							boolean sameRequests = true;
-							
-							while (testedIt.hasNext()
-									&& foundIt.hasNext()
-									&& sameRequests) {
-								
-								sameRequests = testedIt.next().equals(foundIt.next());
-							}
-							
-							/* at this moment we are
-							 * sure that these two routes
-							 * are not same */
-							
-							sameRoutes = sameRequests;
-						}
-						
-					} else {
-						sameRoutes = false;
-					}
-				/* check_same_routes_loop */
-				} 
-				
-				sameSolutionsFound = sameRoutes;
-				
-			/* same objective value */
-				
-			} else {
-				sameSolutionsFound = false;
+				sameSolutionsFound = true;
 			}
 		}
 		
@@ -219,7 +67,16 @@ public class AdaptiveMemory {
 				|| contains(solution)) {
 			success = false;
 		} else {
-			solutions.add(solution);
+			Iterator<Solution> it = solutions.iterator();
+			int position = 0;
+			while (it.hasNext() 
+					&& it.next().getObjectiveValue() < solution.getObjectiveValue()) {
+				position++;
+			}
+			
+			if (position < SIZE) {
+				solutions.add(position, solution);
+			}
 		}
 		
 		return success;
@@ -266,11 +123,7 @@ public class AdaptiveMemory {
 	 * 
 	 * example: 
 	 * 
-<<<<<<< HEAD
 	 * treshold = 0.7, two iterations
-=======
-	 *  threshold = 0.7, two iterations
->>>>>>> 48ff0d92ac94c4eb29c738f466590d7857f4abf4
 	 * 
 	 * 1. drawn random value 0.55 <= 0.7 ? OK
 	 * move the sector end index up
@@ -375,12 +228,12 @@ public class AdaptiveMemory {
 			routeIndicesForSolution.put(i, routeIds);
 		}
 		
-		if (solutions.size() > 0) {
+		if (sortedSolutions.size() > 0) {
 			
 			/* create shallow copy of all requests */
 			
 			Solution firstSolution = sortedSolutions.get(0);
-			List<Integer> requestIndices = firstSolution
+			List<Integer> requestIds = firstSolution
 					.getRequests()
 					.stream()
 					.map(r -> r.getId())
@@ -388,7 +241,7 @@ public class AdaptiveMemory {
 			List<Vehicle> pickedVehicles = new LinkedList<>();
 			List<Route> pickedRoutes = new LinkedList<>();
 			
-			while (requestIndices.size() > 0 && solutionIndices.size() > 0) {
+			while (requestIds.size() > 0 && solutionIndices.size() > 0) {
 				int sectorStart = 0;
 				int sectorEnd = solutionIndices.size() - 1;
 				
@@ -406,15 +259,13 @@ public class AdaptiveMemory {
 				int diff = sectorEnd - sectorStart;
 				int solutionIndex = (int) (sectorStart + Math.random() * diff);
 				Solution pickedSolution = sortedSolutions.get(
-						solutionIndices.get(solutionIndex));
-				
+						solutionIndices.get((int) solutionIndex));
 				List<Integer> routeIndices = 
-				routeIndicesForSolution.get(solutionIndex);
-				int routeIndex = (int) (Math.random() 
-						* routeIndices.size());
+						routeIndicesForSolution.get(solutionIndices.get(solutionIndex));
+				int routeIndex = ListUtils.getRandomElement(routeIndices);
 				
 				Vehicle pickedVehicle = pickedSolution.getVehicles()
-						.get(routeIndices.get(routeIndex));
+						.get(routeIndex);
 				Route pickedRoute = pickedVehicle.getRoute();
 				
 				boolean uniqueRequests = true;
@@ -438,62 +289,74 @@ public class AdaptiveMemory {
 				
 				if (uniqueRequests) {
 					pickedVehicles.add(pickedVehicle);
-					requestIndices.removeAll(
+					pickedRoutes.add(pickedRoute);
+					requestIds.removeAll(
 							pickedVehicle.getRoute()
 								.getRequests()
 								.stream()
-								.map(r -> r.getId())
+								.map(Request::getId)
 								.collect(Collectors.toList()));
 				}
 				
 				/* WARNING! 
 				 * 
 				 * we're removing here Integer value
-				 * based on the passed index in the list!
-				 * e.g. if routeIndex == 1
-				 * and routeIndices looks like [2, 4, 9, 1]
-				 * we'll remove the second element [4]!
-				 * so after this operation routeIndices
-				 * will be equal to [2, 9, 1]
-				 * 
-				 * route index is a primitive int value
-				 * and since the list provides a 
-				 * List.remove(__int__ index) method
-				 * this method will be used and 
-				 * not the List.remove(Object)
-				 * (List.remove(Integer)) */
+				 * from the list - not the element at the position
+				 * routeIndex 
+				 */
 				
-				routeIndices.remove(routeIndex);
-				
-				/* if we've used the last route
-				 * let's discard this solution 
-				 * from the generation process */
+				routeIndices.remove(Integer.valueOf(routeIndex));
 				
 				if (routeIndices.size() == 0) {
 					
-					/* same situation as above */
+					/* we're removing here the Integer element
+					 * not the element at the position solutionIndex 
+					 * 
+					 * note the order of removing solutions:
+					 * we're updating the map first and then 
+					 * the indices list
+					 * */
 					
-					solutionIndices.remove(solutionIndex);
-					routeIndicesForSolution.remove(solutionIndex);
+					routeIndicesForSolution.remove(Integer.valueOf(solutionIndices.get(solutionIndex)));
+					solutionIndices.remove(Integer.valueOf(solutionIndices.get(solutionIndex)));
 				}
 			}
 			
 			newSolution = new Solution(pickedVehicles);
 			
-			if (requestIndices.size() > 0) {
-				List<PickupRequest> leftRequests = requestIndices.stream()
-						.map(i -> firstSolution.getRequests().get(i))
+			if (requestIds.size() > 0) {
+				Iterator<PickupRequest> leftRequestsIt = firstSolution.getRequests().stream()
 						.filter(r -> r.getType() == RequestType.PICKUP)
 						.map(r -> (PickupRequest) r)
-						.collect(Collectors.toList());
+						.filter(r -> requestIds.contains(r.getId()))
+						.collect(Collectors.toList())
+						.iterator();
 				
-				for (PickupRequest pickup : leftRequests) {
-					insertionAlg.insertRequestToSolution(pickup, newSolution, objective);
+				boolean insertedSuccessfully = true;
+				while (leftRequestsIt.hasNext() && insertedSuccessfully) {
+					PickupRequest pickup = leftRequestsIt.next();
+					insertedSuccessfully = insertionAlg.insertRequestToSolution(pickup, newSolution, objective);
+				}
+				
+				/* if inserting all requests is not possible
+				 * return the best current solution */
+				
+				if (!insertedSuccessfully) {
+					newSolution = sortedSolutions.get(0);
 				}
 			}
 		}
 		
 		return newSolution;
+	}
+
+	/* while the solutions list is bigger than SIZE
+	 * keep removing the last elements */
+	
+	public void update() {
+		while (solutions.size() > SIZE) {
+			solutions.remove(solutions.size() - 1);
+		}
 	}
 }
 

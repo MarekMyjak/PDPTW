@@ -40,13 +40,9 @@ public class Location {
     
     public static double calculatePolarAngle(Location l1, Location l2) {
     	double xDiff = l2.getX() - l1.getX();
-    	double distance = calculateDistance(l1, l2);
+    	double yDiff = l2.getY() - l1.getY();
+    	double phi = Math.atan2(yDiff, xDiff);
     	
-    	/* Reminder: 
-    	 * xDiff / distance == cos(phi) 
-    	 * acos(cos(phi)) == phi 
-    	 * acos <=> arccos */ 
-    	
-    	return Math.acos(xDiff / distance);
+    	return (phi >= 0) ? phi : phi + 2 * Math.PI;
     }
 }

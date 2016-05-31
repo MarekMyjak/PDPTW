@@ -1,7 +1,10 @@
 package pl.edu.agh.io.pdptw;
 
-import com.google.gson.Gson;
+import java.io.IOException;
+import java.util.List;
+
 import org.json.simple.parser.ParseException;
+
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.optimization.OptimizationAlgorithm;
@@ -9,15 +12,11 @@ import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.configuration.DefaultConfigReader;
 import pl.edu.agh.io.pdptw.logging.LoggingUtils;
-import pl.edu.agh.io.pdptw.model.*;
-import pl.edu.agh.io.pdptw.model.visualization.VisualizationData;
-import pl.edu.agh.io.pdptw.model.visualization.VisualizationRoute;
+import pl.edu.agh.io.pdptw.model.Request;
+import pl.edu.agh.io.pdptw.model.Solution;
+import pl.edu.agh.io.pdptw.model.Vehicle;
 import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 import pl.edu.agh.io.pdptw.visualization.VisualizationService;
-
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 
 public class Main {
@@ -37,7 +36,7 @@ public class Main {
 			Solution solution = generation.generateSolution(requests, vehicles, configuration);
 			Objective objective = algs.getObjective();
 
-			solution.getVehicles().forEach(System.out::println);
+//			solution.getVehicles().forEach(System.out::println);
 			
 			System.out.println("requests total: " + requests.size());
 			System.out.println("inserted total: " + solution.getRequests().size());
@@ -46,9 +45,12 @@ public class Main {
 			
 			OptimizationAlgorithm optimization = configuration.getAlgorithms()
 					.getOptimizationAlgorithm();
+			
+			optimization.optimize(solution, configuration).getObjectiveValue();
+			LoggingUtils.info("Original objective value: " + solution.getObjectiveValue());
 
 			VisualizationService service = new VisualizationService();
-			service.makeVisualizationData(solution);
+			service.makeVisualizationData(solution, configuration);
 
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {
 			LoggingUtils.logStackTrace(e);

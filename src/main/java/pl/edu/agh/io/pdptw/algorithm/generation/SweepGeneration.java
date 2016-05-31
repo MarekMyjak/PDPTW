@@ -18,10 +18,10 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 public class SweepGeneration implements GenerationAlgorithm {
 
 	@Override
-	public Solution generateSolution(List<Request> requestPool, List<Vehicle> vehicles,
-			Configuration config)
+	public Solution generateSolution(List<Request> requestPool,
+			List<Vehicle> vehicles, Configuration configuration)
 			throws IllegalArgumentException {
-		
+
 		if (requestPool == null) {
 			throw new IllegalArgumentException("Pool of requests list is set to NULL");
 		}
@@ -29,11 +29,13 @@ public class SweepGeneration implements GenerationAlgorithm {
 			throw new IllegalArgumentException("Vehicles list is set to NULL");
 		}
 		
-		InsertionAlgorithm insertionAlg = config.getAlgorithms().getInsertionAlgorithm();
-		Objective objective = config.getAlgorithms().getObjective();
+		InsertionAlgorithm insertionAlg = configuration.getAlgorithms().getInsertionAlgorithm();
+		Objective objective = configuration.getAlgorithms().getObjective();
 		List<Vehicle> usedVehicles = new LinkedList<>();
 		Solution result = new Solution(usedVehicles);
 		Location warehouseLocation = vehicles.get(0).getLocation();
+		double maxAngleDelta = (2 * Math.PI) / requestPool.size();
+		maxAngleDelta = (maxAngleDelta == 0) ? 0.1 : maxAngleDelta;
 
 		/* calculate the polar angle between the warehouse (the start point)
 		 * and each request location */
@@ -55,102 +57,38 @@ public class SweepGeneration implements GenerationAlgorithm {
 				}).collect(Collectors.toCollection(LinkedList::new));
 		
 		Iterator<Vehicle> vehiclesIt = vehicles.iterator();
-		boolean insertedSuccessfully = true;
+		Iterator<PickupRequest> pickupIt = pickupRequests.iterator();
+		PickupRequest pickupWithoutVehicle = null;
+		boolean requestLeft = true;
 		
-		while (pickupRequests.size() > 0
+		while (requestLeft
 				&& vehiclesIt.hasNext()) {
 			
-			PickupRequest curRequest = pickupRequests.remove(0); 
+			boolean insertedSuccessfully = true;
 			Vehicle curVehicle = vehiclesIt.next();
-			insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, objective);
-			Location pickupLocation = curRequest.getLocation();
-			Location deliveryLocation = curRequest.getSibling().getLocation();
+			requestLeft = false;
 			
-			Location lowerBoundary = (pickupLocation.getPolarAngle() 
-					<= deliveryLocation.getPolarAngle())
-						? pickupLocation 
-						: deliveryLocation;
-			Location upperBoundary = (lowerBoundary == pickupLocation) 
-					? deliveryLocation
-					: pickupLocation;
-			
-			/* select requests in the sector marked out by the location
-			 *  of the current pickup and delivery requests 
-			 *  i.e. lying in the area within the 
-			 *  lower boundary - warehouse - upper boundary angle */
-			
-			List<PickupRequest> pickupsInSector = pickupRequests.stream()
-					.filter(r -> {
-						Location p = r.getLocation();
-						Location d = r.getSibling().getLocation();
-						
-						return p.getPolarAngle() >= lowerBoundary.getPolarAngle()
-							&& p.getPolarAngle() <= upperBoundary.getPolarAngle()
-							&& d.getPolarAngle() >= lowerBoundary.getPolarAngle()
-							&& d.getPolarAngle() <= lowerBoundary.getPolarAngle();
-							
- 					}).collect(Collectors.toList());
-			Iterator<PickupRequest> sectorIt = pickupsInSector.iterator();
-			
-			/* Try to insert each request */
-			
-			while (sectorIt.hasNext()) {
-				PickupRequest pickupToInsert = sectorIt.next();
-				if (pickupToInsert.getId().equals(56)) {
-					System.out.println("sector 56");
-				}
-				insertedSuccessfully = insertionAlg.insertRequestForVehicle(
-						pickupToInsert, curVehicle, objective);
-				
-				/* Remove the newly dispatched request from the 
-				 * general and sector pools */
-				
-				if (insertedSuccessfully) {
-					pickupRequests.remove(pickupToInsert);
-					sectorIt.remove();
-				}
+			if (pickupWithoutVehicle != null) {
+				insertionAlg.insertRequestForVehicle(pickupWithoutVehicle, curVehicle, objective);
+				pickupWithoutVehicle = null;
 			}
 			
-			/* We've inserted all requests in the current
-			 * sector. Now we should check whether we can
-			 * add some more requests. In order to do this
-			 * we'll sort the remaining pickup requests by
-			 * the angle between them and the upper boundary. */
-			
-			if (pickupsInSector.size() == 0
-					&& insertedSuccessfully) {
+			while (insertedSuccessfully
+					&& pickupIt.hasNext()) {
 				
-				double curAngle = curRequest.getLocation().getPolarAngle();
-				Iterator<PickupRequest> nearestIt = pickupRequests.stream()
-						.sorted((r1, r2) -> {
-							Location p1 = r1.getLocation();
-							Location p2 = r2.getLocation();
-							double diff1 = Math.abs(p1.getPolarAngle() - curAngle);
-							double diff2 = Math.abs(p2.getPolarAngle() - curAngle);
-							
-							return (diff1 < diff2)
-									? -1
-									: (diff1 > diff2) ? 1 : 0;
-									
-						})
-						.collect(Collectors.toList())
-						.iterator();
+				PickupRequest curRequest = pickupIt.next();
+				insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, objective);
 				
-				while (insertedSuccessfully && nearestIt.hasNext()) {
-					PickupRequest nearestRequest = nearestIt.next();
-					insertedSuccessfully = insertionAlg.insertRequestForVehicle(
-							nearestRequest, curVehicle, objective);
-					if (insertedSuccessfully) {
-						pickupRequests.remove(nearestRequest);
-					}
+				if (!insertedSuccessfully) {
+					pickupWithoutVehicle = curRequest;
+					requestLeft = true;
 				}
 			}
 			
 			usedVehicles.add(curVehicle);
 		}
 		
-		System.out.println();
-		
+		result.setObjectiveValue(objective.calculate(result));
 		return result;
 	}
 }

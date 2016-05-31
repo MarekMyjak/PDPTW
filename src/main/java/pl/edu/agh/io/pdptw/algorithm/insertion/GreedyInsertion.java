@@ -48,6 +48,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 					
 					vehicle.insertRequest(pickup, pPos, dPos);
 					newObjective = objective.calculateForVehicle(vehicle);
+					vehicle.removeRequest(pickup);
 					
 					if (newObjective < minObjective) {
 						minObjective = newObjective;
@@ -55,7 +56,6 @@ public class GreedyInsertion implements InsertionAlgorithm {
 						deliveryPosition = dPos;
 					}
 					
-					vehicle.removeRequest(pickup);
 				}
 			}
 		}

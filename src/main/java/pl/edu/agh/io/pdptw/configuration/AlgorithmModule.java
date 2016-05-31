@@ -6,6 +6,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.generation.GreedyGeneration;
+import pl.edu.agh.io.pdptw.algorithm.generation.SectorBasedGeneration;
 import pl.edu.agh.io.pdptw.algorithm.generation.SweepGeneration;
 import pl.edu.agh.io.pdptw.algorithm.insertion.GreedyInsertion;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
@@ -44,6 +45,7 @@ public class AlgorithmModule extends AbstractModule {
 	static {
 		generationAlgorithms.put("greedy", GreedyGeneration.class);
 		generationAlgorithms.put("sweep", SweepGeneration.class);
+		generationAlgorithms.put("sector", SectorBasedGeneration.class);
 		
 		insertionAlgorithms.put("greedy", GreedyInsertion.class);
 		insertionAlgorithms.put("regret", RegretInsertion.class);

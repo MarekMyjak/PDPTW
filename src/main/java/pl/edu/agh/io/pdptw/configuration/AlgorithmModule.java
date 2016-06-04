@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
+import pl.edu.agh.io.pdptw.algorithm.decomposition.DecompositionAlgorithm;
+import pl.edu.agh.io.pdptw.algorithm.decomposition.SweepDecomposition;
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.generation.GreedyGeneration;
 import pl.edu.agh.io.pdptw.algorithm.generation.SectorBasedGeneration;
@@ -41,25 +43,37 @@ public class AlgorithmModule extends AbstractModule {
 		objectives = new HashMap<>();
 	private static final Map<String, Class<? extends Scheduler>> 
 		schedulers = new HashMap<>();
+	private static final Map<String, Class<? extends DecompositionAlgorithm>> 
+		decompositionAlgorithms = new HashMap<>();
 	
 	static {
+		
+/* generation algorithms */
 		generationAlgorithms.put("greedy", GreedyGeneration.class);
 		generationAlgorithms.put("sweep", SweepGeneration.class);
 		generationAlgorithms.put("sector", SectorBasedGeneration.class);
 		
+/* insertion algorithms */
 		insertionAlgorithms.put("greedy", GreedyInsertion.class);
 		insertionAlgorithms.put("regret", RegretInsertion.class);
-		
+
+/* removal algorithms */
 		removalAlgorithms.put("random", RandomRemoval.class);
 		removalAlgorithms.put("worst", WorstRemoval.class);
 		removalAlgorithms.put("shaw", ShawRemoval.class);
-		
+
+/* optimization algorithms */
 		optimizationAlgorithms.put("tabu", TabuOptimization.class);
 		
+/* objective functions*/		
 		objectives.put("total_distance", TotalDistanceObjective.class);
 		objectives.put("total_vehicles", TotalVehiclesObjective.class);
 		
+/* scheduling algorithms */		
 		schedulers.put("drive_first", DriveFirstScheduler.class);
+
+/* decomposition algorithms */		
+		decompositionAlgorithms.put("sweep", SweepDecomposition.class);
 	}
 	
 	@Override
@@ -67,6 +81,11 @@ public class AlgorithmModule extends AbstractModule {
 		boolean algorithmNamesValid = true;
 		final String ERROR_MESSAGE_PATTERN = "\nInvalid %s algorithm name";
 		StringBuilder builder = new StringBuilder();
+		
+		/* check whether all of the
+		 * passed algorithms names
+		 * are present in the corresponding
+		 * maps */
 		
 		algorithmNamesValid = generationAlgorithms.containsKey(description.getGenerationAlgorithmName());
 		if (!algorithmNamesValid) {
@@ -92,6 +111,10 @@ public class AlgorithmModule extends AbstractModule {
 		if (!algorithmNamesValid) {
 			builder.append(String.format(ERROR_MESSAGE_PATTERN, "scheduling"));
 		}
+		algorithmNamesValid = decompositionAlgorithms.containsKey(description.getDecompositionAlgorithmName());
+		if (!algorithmNamesValid) {
+			builder.append(String.format(ERROR_MESSAGE_PATTERN, "decomposition"));
+		}
 		
 		if (!algorithmNamesValid) {
 			throw new IllegalArgumentException(builder.toString());
@@ -109,6 +132,8 @@ public class AlgorithmModule extends AbstractModule {
 				objectives.get(description.getObjectiveName()));
 		bind(Scheduler.class).to(
 				schedulers.get(description.getSchedulerName()));
+		bind(DecompositionAlgorithm.class).to(
+				decompositionAlgorithms.get(description.getDecompositionAlgorithmName()));
 	}
 
 }

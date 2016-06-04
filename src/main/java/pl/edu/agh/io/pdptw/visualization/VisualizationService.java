@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.visualization.VisualizationData;
 import pl.edu.agh.io.pdptw.model.visualization.VisualizationRoute;
@@ -30,7 +31,12 @@ public class VisualizationService {
 
         Gson gson = new Gson();
         String json = gson.toJson(visualizationData);
-        File outputFile = new File(configuration.getOutputPath() + "solution_vis");
+        String[] requestsPathElements = configuration.getRequestsPath().split("/");
+        String fileName = requestsPathElements[requestsPathElements.length - 1];
+        
+        LoggingUtils.info("Saving solution data under: " + configuration.getOutputPath() + fileName);
+        File outputFile = new File(configuration.getOutputPath() + fileName);
+        
         
         if (!outputFile.exists()) {
         	outputFile.createNewFile();

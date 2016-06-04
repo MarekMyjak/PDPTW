@@ -1,12 +1,17 @@
 package pl.edu.agh.io.pdptw.model;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Data
 @AllArgsConstructor
-@ToString()
+@EqualsAndHashCode
+@ToString
+
 public class Location {
     private int x;
     private int y;
@@ -44,5 +49,17 @@ public class Location {
     	double phi = Math.atan2(yDiff, xDiff);
     	
     	return (phi >= 0) ? phi : phi + 2 * Math.PI;
+    }
+    
+    public static Location findCentroid(List<Location> locations) {
+    	int x = 0;
+    	int y = 0; 
+    	
+    	for (Location l : locations) {
+    		x += l.x;
+    		y += l.y;
+    	}
+    	
+    	return new Location(x / locations.size(), y / locations.size());
     }
 }

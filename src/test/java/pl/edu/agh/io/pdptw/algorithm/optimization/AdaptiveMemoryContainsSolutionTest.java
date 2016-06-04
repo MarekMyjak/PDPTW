@@ -2,11 +2,14 @@ package pl.edu.agh.io.pdptw.algorithm.optimization;
 
 
 import junit.framework.Assert;
+
 import org.junit.Test;
+
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.*;
+import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
 import java.util.Arrays;
 
@@ -34,8 +37,7 @@ public class AdaptiveMemoryContainsSolutionTest {
 		Solution s1 = new Solution(Arrays.asList(v1));
 		Solution s2 = new Solution(Arrays.asList(v2));
 		
-		AdaptiveMemory am = new AdaptiveMemory(2, new Configuration("", "", "", false, 
-				new AlgorithmConfiguration(null, null, null, null, new TotalDistanceObjective(), null)));
+		AdaptiveMemory am = new AdaptiveMemory(2, DataGenerator.generateConfiguration());
 		am.addSolution(s1);
 		
 		Assert.assertTrue(am.contains(s1));

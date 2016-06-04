@@ -1,7 +1,10 @@
 package pl.edu.agh.io.pdptw.configuration;
 
 import com.google.inject.Inject;
+
 import lombok.Value;
+import pl.edu.agh.io.pdptw.algorithm.decomposition.DecompositionAlgorithm;
+import pl.edu.agh.io.pdptw.algorithm.decomposition.SweepDecomposition;
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.generation.SweepGeneration;
 import pl.edu.agh.io.pdptw.algorithm.insertion.GreedyInsertion;
@@ -23,14 +26,16 @@ public class AlgorithmConfiguration {
 	OptimizationAlgorithm optimizationAlgorithm;
 	Objective objective;
 	Scheduler scheduler;
+	DecompositionAlgorithm decompositionAlgorithm;
 	
 	public static class AlgorithmConfigurationBuilder {
-		GenerationAlgorithm generationAlgorithm = new SweepGeneration();
-		InsertionAlgorithm insertionAlgorithm = new GreedyInsertion();
-		RemovalAlgorithm removalAlgorithm = new WorstRemoval();
-		OptimizationAlgorithm optimizationAlgorithm = new TabuOptimization();
-		Objective objective = new TotalDistanceObjective();
-		Scheduler scheduler = new DriveFirstScheduler();
+		private GenerationAlgorithm generationAlgorithm = new SweepGeneration();
+		private InsertionAlgorithm insertionAlgorithm = new GreedyInsertion();
+		private RemovalAlgorithm removalAlgorithm = new WorstRemoval();
+		private OptimizationAlgorithm optimizationAlgorithm = new TabuOptimization();
+		private Objective objective = new TotalDistanceObjective();
+		private Scheduler scheduler = new DriveFirstScheduler();
+		private DecompositionAlgorithm decompositionAlgorithm = new SweepDecomposition();
 		
 		public AlgorithmConfigurationBuilder() {
 			
@@ -70,6 +75,11 @@ public class AlgorithmConfiguration {
 			return this;
 		}
 		
+		public AlgorithmConfigurationBuilder setDecompositionAlgorithm(DecompositionAlgorithm decomposition) {
+			this.decompositionAlgorithm = decomposition;
+			return this;
+		}
+		
 		public AlgorithmConfiguration build() {
 			return new AlgorithmConfiguration(
 					generationAlgorithm,
@@ -77,7 +87,8 @@ public class AlgorithmConfiguration {
 					removalAlgorithm,
 					optimizationAlgorithm,
 					objective,
-					scheduler);
+					scheduler,
+					decompositionAlgorithm);
 		}
 	}
 	
@@ -87,7 +98,8 @@ public class AlgorithmConfiguration {
 			RemovalAlgorithm removalAlgorithm,
 			OptimizationAlgorithm optimizationAlgorithm,
 			Objective objective,
-			Scheduler scheduler) {
+			Scheduler scheduler,
+			DecompositionAlgorithm decomposition) {
 		
 		this.generationAlgorithm = generationAlgorithm;
 		this.insertionAlgorithm = insertionAlgorithm;
@@ -95,6 +107,7 @@ public class AlgorithmConfiguration {
 		this.optimizationAlgorithm = optimizationAlgorithm;
 		this.objective = objective;
 		this.scheduler = scheduler;
+		this.decompositionAlgorithm = decomposition;
 	}
 	
 	public static AlgorithmConfigurationBuilder createBuilder() {
@@ -108,6 +121,7 @@ public class AlgorithmConfiguration {
 				new WorstRemoval(), 
 				new TabuOptimization(), 
 				new TotalDistanceObjective(), 
-				new DriveFirstScheduler());
+				new DriveFirstScheduler(),
+				new SweepDecomposition());
 	}
 }

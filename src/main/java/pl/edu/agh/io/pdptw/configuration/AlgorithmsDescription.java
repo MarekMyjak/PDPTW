@@ -12,4 +12,5 @@ public class AlgorithmsDescription {
 	String optimizationAlgorithmName;
 	String objectiveName;
 	String schedulerName;
+	String decompositionAlgorithmName;
 }

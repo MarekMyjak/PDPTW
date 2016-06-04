@@ -7,12 +7,14 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
 
 @Data
+@EqualsAndHashCode
 @AllArgsConstructor
 
 public class Vehicle {
@@ -273,6 +275,10 @@ public class Vehicle {
 		copy.setRoute(route);
 		
 		return copy;
+	}
+	
+	public void copyRequests(Vehicle other) {
+		this.route = new Route(new ArrayList<>(other.getRoute().getRequests()));
 	}
     
 }

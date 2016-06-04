@@ -1,17 +1,18 @@
 {
 	"tests": [
 		{
-			"requestsPath": "resources/test/li_lim_benchmark/lc101.txt",
+			"requestsPath": "resources/test/data/lc101.txt",
 			"vehiclesPath": "resources/test/li_lim_benchmark/vehicles.json",
-			"outputPath": "results/li_lim_result/",
-			"dynamic": true,
+			"outputPath": "resources/test/li_lim_benchmark/",
+			"dynamic": false,
 			"algorithms": {
-				"generation": "sweep",
+				"generation": "sector",
 				"insertion": "greedy",
 				"removal": "random",
 				"optimization": "tabu",
 				"objective": "total_distance",
-				"scheduler": "drive_first"
+				"scheduler": "drive_first",
+				"decomposition": "sweep"
 			}
 		}
 	]

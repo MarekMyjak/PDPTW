@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
@@ -21,28 +22,35 @@ import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class TabuOptimization implements OptimizationAlgorithm {
-	private static final int MAX_ITERATIONS = 5000;
+	private static final int MAX_ITERATIONS = 1000;
+	private Solution solution;
+	private AdaptiveMemory adaptiveMemory;
+	private Configuration configuration;
+	private AtomicBoolean shouldStop = new AtomicBoolean(false);
 	
 	@Override
-	public Solution optimize(Solution solution, Configuration configuration) {
+	public Solution optimize() {
+		this.shouldStop.set(false);
+		
+		LoggingUtils.info("Tabu optimization started (" + solution.getRequests().size() + " requests)");
+		
 		AlgorithmConfiguration algs = configuration.getAlgorithms();
 		solution.setObjectiveValue(algs.getObjective().calculate(solution));
 		Solution curSolution = solution;
 		Solution bestSolution = solution;
-		TabuList tabu = new TabuList(1000, configuration);
-		AdaptiveMemory adaptiveMemory = new AdaptiveMemory(1000, configuration);
 		adaptiveMemory.addSolution(bestSolution);
+		TabuList tabu = new TabuList(1000, configuration);
 		
-		for (int i = 0; i < MAX_ITERATIONS; i++) {
-			if (i % 250 == 0 && i != 0) {
-				curSolution = adaptiveMemory.createRandomSolution(0.7, 3);
+		for (int i = 0; i < MAX_ITERATIONS && !shouldStop.get() ; i++) {
+			if (i % 150 == 0 && i != 0) {
+				curSolution = adaptiveMemory.createRandomSolution(0.65, 3);
 			}
 			
 			/* generate 5 nieighbors created using 
 			 * ejection chains of maximum length 10 */
 			
 			final int iterationNo = i;
-			Optional<Solution> bestNeighbor = generateNeighbors(curSolution, 5, 10, configuration)
+			Optional<Solution> bestNeighbor = generateNeighbors(curSolution, 15, 20, configuration)
 					.stream()
 					.filter(n -> !tabu.isForbiddenByObjective(n, iterationNo))
 					.sorted((n1, n2) -> 
@@ -56,7 +64,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 				
 				if (bestNeighbor.get().getObjectiveValue() 
 						< bestSolution.getObjectiveValue()) {
-					bestSolution = bestNeighbor.get();	
+					bestSolution = bestNeighbor.get();
 					LoggingUtils.info("New best solution found: " + bestSolution.getObjectiveValue());
 				}
 			}
@@ -64,6 +72,8 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			tabu.update(i);
 			adaptiveMemory.update();
 		}
+		
+		this.solution = bestSolution;
 		
 		LoggingUtils.info("Optimization finished. Best found solution: " 
 				+ bestSolution.getObjectiveValue());
@@ -145,6 +155,8 @@ public class TabuOptimization implements OptimizationAlgorithm {
 						prevVehicle = curVehicle;
 						prevEjected = curEjected;
 					}
+				} else {
+					vehicles.remove(curVehicle);
 				}
 			}
 			
@@ -182,6 +194,40 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			
 		}
 		return neighbors;
+	}
+
+	@Override
+	public synchronized Solution getSolution() {
+		return this.solution;
+	}
+
+	@Override
+	public synchronized AdaptiveMemory getAdaptiveMemory() {
+		return this.adaptiveMemory;
+	}
+
+	@Override
+	public OptimizationAlgorithm setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+		this.adaptiveMemory = new AdaptiveMemory(1000, configuration);
+		return this;
+	}
+
+	@Override
+	public OptimizationAlgorithm setSolution(Solution solution) {
+		this.solution = solution;
+		return this;
+	}
+
+	@Override
+	public OptimizationAlgorithm setAdaptiveMemory(AdaptiveMemory adaptiveMemory) {
+		this.adaptiveMemory = adaptiveMemory;
+		return this;
+	}
+
+	@Override
+	public void stopOptimization() {
+		shouldStop.set(true);
 	}
 
 }

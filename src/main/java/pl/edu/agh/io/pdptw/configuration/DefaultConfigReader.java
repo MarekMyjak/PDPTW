@@ -64,6 +64,7 @@ public class DefaultConfigReader implements ConfigReader {
 				String optimizationAlgorithm = (String) algorithms.get("optimization");
 				String objective = (String) algorithms.get("objective");
 				String scheduler = (String) algorithms.get("scheduler");
+				String decompositionAlgorithm = (String) algorithms.get("decomposition");
 
 				AlgorithmsDescription description = new AlgorithmsDescription(
 					generationAlgorithm,
@@ -71,7 +72,8 @@ public class DefaultConfigReader implements ConfigReader {
 					removalAlgorithm,
 					optimizationAlgorithm,
 					objective,
-					scheduler);
+					scheduler,
+					decompositionAlgorithm);
 
 				Injector injector = Guice.createInjector(new AlgorithmModule(description));
 				AlgorithmConfiguration algorithmConfig = injector.getInstance(AlgorithmConfiguration.class);

@@ -10,7 +10,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
     <script type="text/javascript" src="visjs/vis.min.js"></script>
-    <link href="visjs/vis.min.css" rel="stylesheet" type="text/css" />
+    <link href="visjs/vis.min.css" rel="stylesheet" type="text/css"/>
 
     <!-- JS file-->
     <script type="text/javascript" src="visualization.js"></script>
@@ -18,12 +18,13 @@
     <link href="visualization.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-
-<label class="btn btn-default btn-file">
-    Wybierz plik <input type="file" style="display: none;" onchange='openFile(event)'>
-</label>
-
-<div class="container" id="mynetwork"></div>
-
+<div class="row">
+    <label class="btn btn-default btn-file col-md-2 col-md-offset-5">
+        Import File <input type="file" style="display: none;" onchange='openFile(event)'>
+    </label>
+</div>
+<div class="row">
+    <div class="container" id="mynetwork"></div>
+</div>
 </body>
 </html>

@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.Scheduler;
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 
 @Data
 @EqualsAndHashCode
@@ -35,16 +36,74 @@ public class Vehicle {
 				new Route(new ArrayList<>()));
 	}
 	
+	public List<Request> removeFinishedRequests(int time, boolean shouldLog) {
+		
+		/* note that we leave also the pickup requests
+		 * that has already been served but have corresponding
+		 * delivery requests which are yet to be served! */
+		
+		List<Request> removedRequests = route.getRequests()
+				.stream()
+				.filter(r -> {
+					DeliveryRequest delivery = (DeliveryRequest) 
+							((r.getType() == RequestType.DELIVERY)
+									? r : r.getSibling());
+					return delivery.getRealizationTime() <= time;
+				})
+				.collect(Collectors.toList());
+		
+		scheduler.scheduleRequests(this, time);
+		
+		if (shouldLog) {
+			StringBuilder builder = new StringBuilder();
+			removedRequests.forEach(r -> builder.append(r.getId() + ", "));
+			
+			if (builder.length() > 0) {
+				LoggingUtils.info("Vehicle [" + id 
+						+ "] has finished realization of the following requests: \n" 
+						+ "[" + builder.toString() + "]");
+			}
+		}
+		
+		route = new Route(route.getRequests()
+				.stream()
+				.filter(r -> {
+					DeliveryRequest delivery = (DeliveryRequest) 
+							((r.getType() == RequestType.DELIVERY)
+									? r : r.getSibling());
+					return delivery.getRealizationTime() > time;
+				})
+				.collect(Collectors.toList()));
+		
+		return removedRequests;
+	}
+	
+	public void removeRequestsByIds(List<Integer> requestsIds, int time) {
+		
+		/* save only those requests whose
+		 * ids are not stored in the requestsIds list */
+		
+		route = new Route(route.getRequests()
+				.stream()
+				.filter(r -> !requestsIds.contains(r.getId()))
+				.collect(Collectors.toList()));
+		scheduler.scheduleRequests(this, time);
+	}
+	
 	/* the feasibility of the insertion of the new request pair
 	 * is checked as follows: 
 	 * 1. look for the insertion position of the pickup request
 	 * and calculate the total volume of the products being transported
+	 * 
 	 * 2. add the volume of the products delivered while realizing 
-	 * the new pickup - delivery requests to the total volume 
+	 * the new pickup - delivery requests to the total volume
+	 *  
 	 * 3. propagate the change of the realization times after 
 	 * inserting the pickup requests (it's not actually inserted, 
 	 * we only calculate the change of the time parameters)
+	 * 
 	 * 4. find the insertion position of the new delivery request
+	 * 
 	 * 5. continue propagating the changes */
 	
 	public boolean isInsertionPossible(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {
@@ -87,7 +146,7 @@ public class Vehicle {
 		
 		if (prev != null) {
 			scheduler.updateSuccessor(prev, pickupCopy);
-					
+			
 		} else {
 			/* if the pickup request will potentially be
 			 * the first one on the route we should
@@ -116,7 +175,7 @@ public class Vehicle {
 		 * realization times after finishing that! */
 		
 		while (insertionPossible 
-				&& it.hasNext() 
+				&& it.hasNext()
 				&& counter < deliveryPosition) {
 			
 			cur = it.next();
@@ -161,18 +220,11 @@ public class Vehicle {
 			prev.setRealizationTime(prevOriginalRealizationTime);
 		}
 		
-		/* this section is not needed anymore */
-		
-//		if (!insertionPossible) {
-//			pickupRequest.setRealizationTime(pickupRequest.getTimeWindowStart());
-//			deliveryRequest.setRealizationTime(deliveryRequest.getTimeWindowStart());
-//		}
-		
 		return insertionPossible;
 	}
 	
 	public void updateRealizationTimes() {
-		scheduler.scheduleRequests(this);
+		scheduler.scheduleRequests(this, 0);
 	}
 	
 	public void insertRequest(PickupRequest pickupRequest, int pickupPosition, int deliveryPosition) {
@@ -277,8 +329,29 @@ public class Vehicle {
 		return copy;
 	}
 	
-	public void copyRequests(Vehicle other) {
-		this.route = new Route(new ArrayList<>(other.getRoute().getRequests()));
+	public Vehicle copy() {
+		Vehicle copy = new Vehicle(id, maxCapacity, startLocation);
+		copy.setCurrentlyLoaded(currentlyLoaded);
+		copy.setLocation(location);
+		copy.setRoute(route.copy());
+		
+		return copy;
 	}
-    
+	
+	public Request getCurrentRequest(int time) {
+		if (route.getRequests().size() > 0) {
+			Iterator<Request> it = route.getRequests().iterator();
+			Request current = it.next();
+			Request prev = current;
+			
+			while (it.hasNext() && current.getRealizationTime() < time) {
+				current = it.next();
+				prev = current;
+			}
+			
+			return prev;
+		}
+		
+		return null;
+	}
 }

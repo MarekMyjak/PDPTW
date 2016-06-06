@@ -9,4 +9,13 @@ public class PickupRequest extends Request {
 		super(id, location, volume, timeWindowStart,
 				timeWindowEnd, serviceTime, RequestType.PICKUP);
 	}
+	
+	@Override
+	public Request createShallowCopy() {
+		Request copy =  new PickupRequest(id, location, volume, timeWindowStart, timeWindowEnd, serviceTime);
+		copy.setRealizationTime(realizationTime);
+		copy.setArrivalTime(arrivalTime);
+		copy.setSibling(sibling);
+		return copy;
+	}
 }

@@ -78,6 +78,9 @@ public class DataGenerator {
 	}
 	
 	public static Configuration generateConfiguration() {
-		return new Configuration("", "", "", false, AlgorithmConfiguration.createDefault());
+		return new Configuration("", "", "",
+				false, 1000, 3, 3, 5,
+				new Location(0, 0),
+				AlgorithmConfiguration.createDefault());
 	}
 }

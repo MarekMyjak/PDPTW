@@ -37,4 +37,11 @@ public class Solution {
 				.flatMap(r -> r.getRequests().stream())
 				.collect(Collectors.toList());
 	}
+	
+	public Solution copy() {
+		List<Vehicle> vehiclesCopies = vehicles.stream()
+				.map(v -> v.copy())
+				.collect(Collectors.toList());
+		return new Solution(vehiclesCopies);
+	}
 }

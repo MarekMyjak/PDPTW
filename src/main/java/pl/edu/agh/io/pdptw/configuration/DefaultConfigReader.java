@@ -56,6 +56,10 @@ public class DefaultConfigReader implements ConfigReader {
 				String vehiclesPath = (String) test.get("vehiclesPath");
 				String outputPath = (String) test.get("outputPath");
 				boolean isDynamic = (boolean) test.get("dynamic");
+				int iterations = ((Long) test.get("iterations")).intValue();
+				int decompositionCycles = ((Long) test.get("decompositionCycles")).intValue();
+				int iterationsPerDecomposition = ((Long) test.get("iterationsPerDecomposition")).intValue();
+				int maxVehiclesInGroup = ((Long) test.get("maxVehiclesInGroup")).intValue();
 				JSONObject algorithms = (JSONObject) test.get("algorithms");
 
 				String generationAlgorithm = (String) algorithms.get("generation");
@@ -82,8 +86,12 @@ public class DefaultConfigReader implements ConfigReader {
 						vehiclesPath,
 						outputPath,
 						isDynamic,
+						iterations,
+						decompositionCycles,
+						iterationsPerDecomposition,
+						maxVehiclesInGroup,
+						new Location(0, 0),
 						algorithmConfig);
-
 				configurations.add(configuration);
 			}
 		}
@@ -114,11 +122,20 @@ public class DefaultConfigReader implements ConfigReader {
 			int totalCapacity = sc.nextInt();
 			int vehicleSpeed = sc.nextInt();
 			
-//			skip meta data about the warehouse
+			/* skip meta data about the vehicles */
 			if (sc.hasNextLine()) {
 				sc.nextLine();
 				lineCounter++;
 			}
+			
+			/* read the warehouse location data */
+		    for (int i = 0; i < parameterNames.length && sc.hasNextInt(); i++) {
+	    		String parameterName = parameterNames[i];
+	    		values.put(parameterName, sc.nextInt());
+			}
+		    
+		    configuration.setWarehouseLocation(new Location(values.get("x"), values.get("y")));
+			
 			if (sc.hasNextLine()) {
 				sc.nextLine();
 				lineCounter++;
@@ -246,10 +263,18 @@ public class DefaultConfigReader implements ConfigReader {
 				JSONObject vehicleData = (JSONObject) vehicles.get(i);
 				String id = (String) vehicleData.get("id");
 				int maxCapacity = ((Long) vehicleData.get("maxCapacity")).intValue();
-				JSONObject locationJson = (JSONObject) vehicleData.get("startLocation");
-				int x = ((Long) locationJson.get("x")).intValue();
-				int y = ((Long) locationJson.get("y")).intValue();
-				Location startLocation = new Location(x, y);
+				
+				/* JSONObject locationJson = (JSONObject) vehicleData.get("startLocation");
+				 *  int x = ((Long) locationJson.get("x")).intValue();
+				 *	int y = ((Long) locationJson.get("y")).intValue();
+				 *	Location startLocation = new Location(x, y); */
+				
+				/* as we use the Li & Lim benchmark
+				 * we set the start location of each vehicle
+				 * to the warehouse location (we assume
+				 * that all vehicles start from there) */
+
+				Location startLocation = configuration.getWarehouseLocation();
 				Vehicle vehicle = new Vehicle(id, maxCapacity, startLocation);
 				result.add(vehicle);
 			}

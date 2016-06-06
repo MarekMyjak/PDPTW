@@ -1,7 +1,8 @@
 package pl.edu.agh.io.pdptw.model;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
@@ -11,23 +12,12 @@ import lombok.Getter;
 @EqualsAndHashCode
 
 public class Route {
-	private final List<Request> servicedRequests;
 	private final List<Request> requests;
 	
 	public Route(List<Request> requests) {
 		super();
 
-		this.servicedRequests = new ArrayList<>();
 		this.requests = requests;
-	}
-	
-	public void markRequestAsServed(Request request) throws IllegalArgumentException {
-		if (!requests.contains(request)) {
-			throw new IllegalArgumentException("No such request found");
-		}
-		
-		requests.remove(request);
-		servicedRequests.add(request);
 	}
 	
 	@Override
@@ -38,5 +28,27 @@ public class Route {
 							.map(r -> "id=" + r.getId() + " " + r.getLocation())
 							.collect(Collectors.toList()))
 				+ "]";
+	}
+	
+	public Route copy() {
+		Map<Integer, Request> requestsForIds = new HashMap<>();
+		List<Request> requestsCopies = requests.stream()
+				.map(r -> r.createShallowCopy())
+				.collect(Collectors.toList());
+		
+		requestsCopies.stream()
+				.filter(r -> r.getType() == RequestType.PICKUP)
+				.collect(Collectors.toList())
+				.forEach(p -> requestsForIds.put(p.getId(), p));
+		
+		requestsCopies.stream()
+				.filter(r -> r.getType() == RequestType.DELIVERY)
+				.collect(Collectors.toList())
+				.forEach(d -> {
+					Request p = requestsForIds.get(d.getSibling().getId());
+					d.setSibling(p);
+					p.setSibling(d);
+				});
+		return new Route(requestsCopies);
 	}
 }

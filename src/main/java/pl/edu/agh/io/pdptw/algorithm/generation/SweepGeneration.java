@@ -59,17 +59,18 @@ public class SweepGeneration implements GenerationAlgorithm {
 		Iterator<Vehicle> vehiclesIt = vehicles.iterator();
 		Iterator<PickupRequest> pickupIt = pickupRequests.iterator();
 		PickupRequest pickupWithoutVehicle = null;
-		boolean requestLeft = true;
+		boolean requestsLeft = true;
 		
-		while (requestLeft
+		while (requestsLeft
 				&& vehiclesIt.hasNext()) {
 			
 			boolean insertedSuccessfully = true;
 			Vehicle curVehicle = vehiclesIt.next();
-			requestLeft = false;
+			requestsLeft = false;
 			
 			if (pickupWithoutVehicle != null) {
-				insertionAlg.insertRequestForVehicle(pickupWithoutVehicle, curVehicle, objective);
+				insertionAlg.insertRequestForVehicle(
+						pickupWithoutVehicle, curVehicle, objective);
 				pickupWithoutVehicle = null;
 			}
 			
@@ -81,7 +82,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 				
 				if (!insertedSuccessfully) {
 					pickupWithoutVehicle = curRequest;
-					requestLeft = true;
+					requestsLeft = true;
 				}
 			}
 			

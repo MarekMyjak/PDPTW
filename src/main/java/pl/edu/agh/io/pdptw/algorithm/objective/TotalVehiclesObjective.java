@@ -15,7 +15,7 @@ public class TotalVehiclesObjective implements Objective {
 			.filter(v -> {
 				Route route = v.getRoute();
 				return (route.getRequests().size()
-						+ route.getServicedRequests().size()) > 0;
+						+ route.getRequests().size()) > 0;
 			})
 			.collect(Collectors.toList())
 			.size();

@@ -45,7 +45,6 @@ public class GreedyInsertion implements InsertionAlgorithm {
 			for (int dPos = pPos + 1; dPos <= requests.size() + 1; dPos++) {
 				
 				if (vehicle.isInsertionPossible(pickup, pPos, dPos)) {
-					
 					vehicle.insertRequest(pickup, pPos, dPos);
 					newObjective = objective.calculateForVehicle(vehicle);
 					vehicle.removeRequest(pickup);

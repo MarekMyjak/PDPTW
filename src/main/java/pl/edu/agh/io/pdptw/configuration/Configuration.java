@@ -1,14 +1,21 @@
 package pl.edu.agh.io.pdptw.configuration;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import pl.edu.agh.io.pdptw.model.Location;
 
+@Data
 @AllArgsConstructor
-@Getter
+
 public class Configuration {
-	private final String requestsPath;
-	private final String vehiclesPath;
-	private final String outputPath;
-	private final boolean dynamic;
-	private final AlgorithmConfiguration algorithms;
+	private String requestsPath;
+	private String vehiclesPath;
+	private String outputPath;
+	private boolean dynamic;
+	private int iterations;
+	private int decompositionCycles;
+	private int iterationsPerDecomposition;
+	private int maxVehiclesInGroup;
+	private Location warehouseLocation;
+	private AlgorithmConfiguration algorithms;
 }

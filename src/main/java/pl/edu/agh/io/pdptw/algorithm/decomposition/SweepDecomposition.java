@@ -15,15 +15,15 @@ import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class SweepDecomposition implements DecompositionAlgorithm {
-
+	
 	@Override
 	public List<Solution> decompose(Solution solution,
 			Configuration configuration) {
 		
+		final int MAX_VEHICLES = configuration.getMaxVehiclesInGroup();
 		List<Vehicle> vehicles = solution.getVehicles();
 		Location warehouseLocation = vehicles.get(0).getStartLocation();
 		Map<Vehicle, Double> anglesForVehicles = new HashMap<>();
-		
 		vehicles.forEach(v -> anglesForVehicles.put(v, 
 				Location.calculatePolarAngle(warehouseLocation,
 				Location.findCentroid(v.getRoute()
@@ -43,9 +43,9 @@ public class SweepDecomposition implements DecompositionAlgorithm {
 				.collect(Collectors.toList());
 		
 		/* we assume that that each partial solution
-		 * is made of at most 5 routes */
+		 * is made of at most MAX_VEHICLES routes */
 		
-		List<Solution> solutions = new ArrayList<>(solution.getRequests().size() / 5);
+		List<Solution> solutions = new ArrayList<>(solution.getRequests().size() / MAX_VEHICLES);
 		double startAngle = (Math.random() * (2 * Math.PI));
 		double curAngle = -1.0;
 		Iterator<Vehicle> it = vehicles.iterator();
@@ -68,7 +68,7 @@ public class SweepDecomposition implements DecompositionAlgorithm {
 		solutions.add(curSolution);
 		
 		while (it.hasNext()) {
-			if (vehiclesAddedToCurrentSolution / 5 > 0) {
+			if (vehiclesAddedToCurrentSolution > MAX_VEHICLES) {
 				curSolution = new Solution(new LinkedList<Vehicle>());
 				solutions.add(curSolution);
 				vehiclesAddedToCurrentSolution = 0;
@@ -86,7 +86,7 @@ public class SweepDecomposition implements DecompositionAlgorithm {
 			int vehiclesIndex = 0;
 			
 			while (vehiclesIndex < (skipped - 1)) {
-				if (vehiclesAddedToCurrentSolution / 5 > 0) {
+				if (vehiclesAddedToCurrentSolution > MAX_VEHICLES) {
 					curSolution = new Solution(new LinkedList<Vehicle>());
 					solutions.add(curSolution);
 					vehiclesAddedToCurrentSolution = 0;

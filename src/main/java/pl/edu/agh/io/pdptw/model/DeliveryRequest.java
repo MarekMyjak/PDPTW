@@ -9,4 +9,13 @@ public class DeliveryRequest extends Request {
 		super(id, location, volume, timeWindowStart,
 				timeWindowEnd, serviceTime, RequestType.DELIVERY);
 	}
+	
+	@Override
+	public Request createShallowCopy() {
+		Request copy =  new DeliveryRequest(id, location, volume, timeWindowStart, timeWindowEnd, serviceTime);
+		copy.setRealizationTime(realizationTime);
+		copy.setArrivalTime(arrivalTime);
+		copy.setSibling(sibling);
+		return copy;	
+	}
 }

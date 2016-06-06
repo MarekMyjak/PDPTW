@@ -32,7 +32,7 @@ public class VisualizationService {
         Gson gson = new Gson();
         String json = gson.toJson(visualizationData);
         String[] requestsPathElements = configuration.getRequestsPath().split("/");
-        String fileName = requestsPathElements[requestsPathElements.length - 1];
+        String fileName = requestsPathElements[requestsPathElements.length - 1] + "_dynamic";
         
         LoggingUtils.info("Saving solution data under: " + configuration.getOutputPath() + fileName);
         File outputFile = new File(configuration.getOutputPath() + fileName);

@@ -18,6 +18,7 @@ public class WorstRemoval implements RemovalAlgorithm {
 	@Override
 	public Request removeRequestForVehicle(Vehicle vehicle, Configuration configuration) {
 		RequestPositions worstPositions = findBestRemovalPositions(vehicle, configuration);
+		
 		return vehicle.removeRequest(
 				worstPositions.getPickupPosition(), worstPositions.getDeliveryPosition());
 	}
@@ -31,7 +32,8 @@ public class WorstRemoval implements RemovalAlgorithm {
 		double newObjective = Integer.MAX_VALUE;
 		RequestPositions worstPositions = RequestPositions.createDefault();
 		Route route = vehicle.getRoute();
-		List<PickupRequest> pickupRequests = route.getRequests().stream()
+		List<PickupRequest> pickupRequests = route.getRequests()
+				.stream()
 				.filter(r -> r.getType() == RequestType.PICKUP)
 				.map(r -> (PickupRequest) r)
 				.collect(Collectors.toList());

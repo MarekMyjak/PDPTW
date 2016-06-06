@@ -22,7 +22,7 @@ public class Request {
 	 * @timeWindowEnd - latest possible request realization time
 	 * 
 	 * ATTENTION! It's the latest possible time of starting request realization,
-	 * It is NOT THE LATEST ALLOWED TIME OF DEPARTURE from the service location
+	 * NOT THE LATEST ALLOWED TIME OF DEPARTURE from the service location
 	 *  
 	 * @serviceTime - time required to serve the specific request
 	 * @arrivalTime - time of the arrival of the request to the requests pool */
@@ -56,7 +56,7 @@ public class Request {
 		this.id = id;
 		this.location = location;
 		this.volume = volume;
-		this.timeWindowStart = timeWindowStart;
+		this.timeWindowStart = timeWindowStart; 
 		this.timeWindowEnd = timeWindowEnd;
 		this.serviceTime = serviceTime;
 		
@@ -86,6 +86,7 @@ public class Request {
 				+ " sid: %s, v: %d", 
 				id, type.toString(), location, timeWindowStart, realizationTime, timeWindowEnd,
 				realizationTime + serviceTime, serviceTime, (sibling != null) ? "" + sibling.getId() : "NO SIBLING", volume);
+		
 	}
 	
 	/* this method is meant to be used only

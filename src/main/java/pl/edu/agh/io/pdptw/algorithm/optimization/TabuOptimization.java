@@ -1,9 +1,11 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -11,7 +13,6 @@ import java.util.stream.Collectors;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.removal.RemovalAlgorithm;
-import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
@@ -22,7 +23,6 @@ import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class TabuOptimization implements OptimizationAlgorithm {
-	private static final int MAX_ITERATIONS = 1000;
 	private Solution solution;
 	private AdaptiveMemory adaptiveMemory;
 	private Configuration configuration;
@@ -30,24 +30,40 @@ public class TabuOptimization implements OptimizationAlgorithm {
 	
 	@Override
 	public Solution optimize() {
-		this.shouldStop.set(false);
-		
 		LoggingUtils.info("Tabu optimization started (" + solution.getRequests().size() + " requests)");
 		
-		AlgorithmConfiguration algs = configuration.getAlgorithms();
-		solution.setObjectiveValue(algs.getObjective().calculate(solution));
+		this.shouldStop.set(false);
+		
+		final int MAXI_TERATIONS = configuration.getIterations();
+		solution.updateOjectiveValue( configuration.getAlgorithms().getObjective());
 		Solution curSolution = solution;
 		Solution bestSolution = solution;
 		adaptiveMemory.addSolution(bestSolution);
 		TabuList tabu = new TabuList(1000, configuration);
+		int randomCreationRate = MAXI_TERATIONS / 10;
 		
-		for (int i = 0; i < MAX_ITERATIONS && !shouldStop.get() ; i++) {
-			if (i % 150 == 0 && i != 0) {
+		for (int i = 0; i < MAXI_TERATIONS && !shouldStop.get() ; i++) {
+			if (i % randomCreationRate == 0 && i != 0) {
+				
+				/* 0.65 is the treshold value
+				 * it means that during the creation
+				 * of the random solution the solutions
+				 * from the top half of the list will
+				 * be slightly prefered 
+				 * 
+				 * 3 is the number of iterations that
+				 * should be executed during the selection
+				 * of the sector of the solutions list
+				 * that the random solution will be picked from 
+				 * 
+				 * more details can be found in the 
+				 * comments in the AdaptiveMemory class */
+				
 				curSolution = adaptiveMemory.createRandomSolution(0.65, 3);
 			}
 			
-			/* generate 5 nieighbors created using 
-			 * ejection chains of maximum length 10 */
+			/* generate 15 nieighbors created using 
+			 * ejection chains of maximum length 20 */
 			
 			final int iterationNo = i;
 			Optional<Solution> bestNeighbor = generateNeighbors(curSolution, 15, 20, configuration)
@@ -56,6 +72,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 					.sorted((n1, n2) -> 
 						(n1.getObjectiveValue() < n2.getObjectiveValue()) ? -1 : 1)
 					.findFirst();
+			
 			
 			if (bestNeighbor.isPresent()) {
 				curSolution = bestNeighbor.get();
@@ -73,19 +90,20 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			adaptiveMemory.update();
 		}
 		
-		this.solution = bestSolution;
-		
 		LoggingUtils.info("Optimization finished. Best found solution: " 
 				+ bestSolution.getObjectiveValue());
-		LoggingUtils.info("Initial number of requests: " + solution.getRequests().size());
-		LoggingUtils.info("Number of requests: " + bestSolution.getRequests().size());
+//		LoggingUtils.info("Initial number of requests: " + solution.getRequests().size());
+//		LoggingUtils.info("Number of requests: " + bestSolution.getRequests().size());
+		LoggingUtils.info("Number of used vehicles: " + bestSolution.getVehicles().size());
+		this.solution = bestSolution;
 		
 		return bestSolution;
 	}
 	
-	/* neighborhood is using so called ejection chains - 
+	/* the neighborhood is generated using
+	 * so called ejection chains - 
 	 * we remove a request from one route and insert it to 
-	 * another one in the most feasible place
+	 * another one in the most feasible place;
 	 * we repeat this process as long as we want
 	 * 
 	 *  example 
@@ -101,7 +119,6 @@ public class TabuOptimization implements OptimizationAlgorithm {
 	
 	public static List<Solution> generateNeighbors(Solution solution, int n, int maxChainLength, Configuration configuration) {
 		List<Solution> neighbors = new LinkedList<>();
-				
 		InsertionAlgorithm insertion = configuration.getAlgorithms().getInsertionAlgorithm();
 		RemovalAlgorithm removal = configuration.getAlgorithms().getRemovalAlgorithm();
 		Objective objective = configuration.getAlgorithms().getObjective();
@@ -109,7 +126,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 		/* generate n new solutions based on the passed one */
 		for (int i = 0; i < n; i++) {
 			
-			/* create a shallow copy of each vehicle
+			/* create a shallow copy of each vehicle;
 			 * note that the route's requests list
 			 * has to be set to a new list instation 
 			 * so that we can safely modify it 
@@ -117,22 +134,44 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			
 			List<Vehicle> vehicles = solution.getVehicles()
 					.stream()
-					.map(v -> {
-						Vehicle copy = v.createShallowCopy();
-						copy.setRoute(new Route(
-								new LinkedList<>(v.getRoute().getRequests())));
-						return copy;
-					}).collect(Collectors.toList());
+					.map(v -> v.copy())
+					.collect(Collectors.toList());
+			
+			/* we need to replace the references to
+			 * siblings with their copies */
+			
+			for (Vehicle v : vehicles) {
+				Map<Integer, Request> requestsForIds = new HashMap<>();
+				v.getRoute().getRequests()
+						.stream()
+						.filter(r -> r.getType() == RequestType.PICKUP)
+						.collect(Collectors.toList())
+						.forEach(p -> requestsForIds.put(p.getId(), p));
+				
+				v.getRoute().getRequests()
+						.stream()
+						.filter(r -> r.getType() == RequestType.DELIVERY)
+						.collect(Collectors.toList())
+						.forEach(d -> {
+							Request p = requestsForIds.get(d.getSibling().getId());
+							d.setSibling(p);
+							p.setSibling(d);
+						});
+			}
 			
 			Solution neighbor = new Solution(vehicles);
 			Vehicle prevVehicle = ListUtils.getRandomElement(vehicles);
 			Request prevEjected = removal.removeRequestForVehicle(prevVehicle, configuration);
-			Request curEjected = null;
-			PickupRequest pickupToInsert = null;
+			Request curEjected;
+			PickupRequest pickupToInsert;
 			boolean insertedSuccessfully = true;
 			
 			for (int j = 0; j < maxChainLength; j++) {
 				Vehicle curVehicle = ListUtils.getRandomElement(vehicles);
+//				if (prevEjected.getId().equals(100)) {
+//				System.out.println("" + (j + 1) + ". :" + prevVehicle.getId() + " cur: " + curVehicle.getId()
+//						+ ", p: " + prevEjected.getId() + " d: " + prevEjected.getSibling().getId());
+//				}
 				
 				if (curVehicle.getRoute().getRequests().size() > 0) {
 					Route routeCopy = new Route(new ArrayList<>(curVehicle.getRoute().getRequests()));
@@ -146,22 +185,30 @@ public class TabuOptimization implements OptimizationAlgorithm {
 							pickupToInsert, curVehicle, objective);
 					
 					/* if insertion is not possible 
-					 * insert the request pair back into 
-					 * the current vehicle's route */
+					 * restore the provious state 
+					 * of the route */
 					
 					if (!insertedSuccessfully) {
+						
+						/* it is crucial to update the realization times
+						 * because during the removal of a request its
+						 * realization time is set to the beginning of
+						 * its time window*/
+						
 						curVehicle.setRoute(routeCopy);
+						curVehicle.updateRealizationTimes();
+						
 					} else {
 						prevVehicle = curVehicle;
 						prevEjected = curEjected;
 					}
-				} else {
-					vehicles.remove(curVehicle);
 				}
 			}
 			
 			/* we need to insert the last ejected
 			 * request back into the last drawn vehicle
+			 * (or any other vehicle in case it is
+			 * not possible)
 			 */
 			
 			pickupToInsert = (PickupRequest) 
@@ -173,6 +220,9 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			insertedSuccessfully = false;
 			
 			while (it.hasNext() && !insertedSuccessfully) {
+				if (prevVehicle.getRoute().getRequests().contains(pickupToInsert)) {
+					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>already inserted");
+				}
 				insertedSuccessfully = insertion.insertRequestForVehicle(
 						pickupToInsert, prevVehicle, objective);
 				prevVehicle = it.next();
@@ -183,6 +233,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 				
 				while (it.hasNext()) {
 					Vehicle v = it.next();
+					
 					if (v.getRoute().getRequests().size() == 0) {
 						it.remove();
 					}
@@ -191,8 +242,9 @@ public class TabuOptimization implements OptimizationAlgorithm {
 				neighbor.setObjectiveValue(objective.calculate(neighbor));
 				neighbors.add(neighbor);
 			}
-			
 		}
+		
+//		System.out.println("--------------");
 		return neighbors;
 	}
 
@@ -209,7 +261,6 @@ public class TabuOptimization implements OptimizationAlgorithm {
 	@Override
 	public OptimizationAlgorithm setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-		this.adaptiveMemory = new AdaptiveMemory(1000, configuration);
 		return this;
 	}
 
@@ -230,6 +281,15 @@ public class TabuOptimization implements OptimizationAlgorithm {
 		shouldStop.set(true);
 	}
 
+	@Override
+	public OptimizationAlgorithm createShallowCopy() {
+		return new TabuOptimization()
+						.setConfiguration(configuration)
+						.setSolution(solution)
+						.setAdaptiveMemory(adaptiveMemory);
+	}
+
+
+
 }
-		
 		

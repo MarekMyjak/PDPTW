@@ -1,12 +1,13 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -29,11 +30,11 @@ public class AdaptiveMemory {
 	private final Objective objective;
 	private final InsertionAlgorithm insertionAlg;
 	
-	public AdaptiveMemory(int size, Configuration config) {
+	public AdaptiveMemory(int size, Configuration configuration) {
 		this.SIZE = size;
 		this.solutions = new ArrayList<>(SIZE);
-		this.objective = config.getAlgorithms().getObjective();
-		this.insertionAlg = config.getAlgorithms().getInsertionAlgorithm();
+		this.objective = configuration.getAlgorithms().getObjective();
+		this.insertionAlg = configuration.getAlgorithms().getInsertionAlgorithm();
 	}
 	
 	/* a simplified version of checking whether
@@ -66,15 +67,20 @@ public class AdaptiveMemory {
 				|| contains(solution)) {
 			success = false;
 		} else {
+			
+			/* we need to copy the solution
+			 * to prevent its unintended modifications */
+			
+			Solution copy = solution.copy();
 			Iterator<Solution> it = solutions.iterator();
 			int position = 0;
 			while (it.hasNext() 
-					&& it.next().getObjectiveValue() < solution.getObjectiveValue()) {
+					&& it.next().getObjectiveValue() < copy.getObjectiveValue()) {
 				position++;
 			}
 			
 			if (position < SIZE) {
-				solutions.add(position, solution);
+				solutions.add(position, copy);
 			}
 		}
 		
@@ -198,7 +204,7 @@ public class AdaptiveMemory {
 			throw new IllegalArgumentException("Invalid iterations number."
 					+ " Should be non-negative");
 		}
-		
+
 		Solution newSolution = null;
 		List<Solution> sortedSolutions = solutions.stream()
 				.sorted((s1, s2) -> Double.compare(
@@ -231,16 +237,16 @@ public class AdaptiveMemory {
 			
 			/* create shallow copy of all requests */
 			
-			Solution firstSolution = sortedSolutions.get(0);
-			List<Integer> requestIds = firstSolution
+			Solution firstSolution = sortedSolutions.get(0).copy();
+			List<Integer> requestsIds = firstSolution
 					.getRequests()
 					.stream()
 					.map(r -> r.getId())
 					.collect(Collectors.toList());
 			List<Vehicle> pickedVehicles = new LinkedList<>();
-			List<Route> pickedRoutes = new LinkedList<>();
+			Set<Integer> pickedRequestsIds = new HashSet<>();
 			
-			while (requestIds.size() > 0 && solutionIndices.size() > 0) {
+			while (requestsIds.size() > 0 && solutionIndices.size() > 0) {
 				int sectorStart = 0;
 				int sectorEnd = solutionIndices.size() - 1;
 				
@@ -276,31 +282,36 @@ public class AdaptiveMemory {
 				 * the already added routes */
 				
 				while (requestsIt.hasNext() && uniqueRequests) {
-					Iterator<Route> routesIt = pickedRoutes.iterator();
-					Request curRequest = requestsIt.next();
-					
-					while (routesIt.hasNext() && uniqueRequests) {
-						uniqueRequests = !routesIt.next()
-								.getRequests()
-								.contains(curRequest);
-					}
+					uniqueRequests = !pickedRequestsIds.contains(requestsIt.next().getId());
 				}
 				
 				if (uniqueRequests) {
-					pickedVehicles.add(pickedVehicle);
-					pickedRoutes.add(pickedRoute);
-					requestIds.removeAll(
+					
+					/* note that we should create a copy of
+					 * the picked vehicle
+					 * in other case we could damage the
+					 * original ones during insertion
+					 * of the left requests */
+					
+					Vehicle vehicleCopy = pickedVehicle.copy();
+					pickedVehicles.add(vehicleCopy);
+					pickedRequestsIds.addAll(pickedVehicle.getRoute().getRequests()
+							.stream()
+							.map(r -> r.getId())
+							.collect(Collectors.toList()));
+							
+					requestsIds.removeAll(
 							pickedVehicle.getRoute()
 								.getRequests()
 								.stream()
-								.map(Request::getId)
+								.map(r -> r.getId())
 								.collect(Collectors.toList()));
 				}
 				
 				/* WARNING! 
 				 * 
-				 * we're removing here Integer value
-				 * from the list - not the element at the position
+				 * we're removing here an Integer value,
+				 * not the element at the position
 				 * routeIndex 
 				 */
 				
@@ -323,11 +334,11 @@ public class AdaptiveMemory {
 			
 			newSolution = new Solution(pickedVehicles);
 			
-			if (requestIds.size() > 0) {
+			if (requestsIds.size() > 0) {
 				Iterator<PickupRequest> leftRequestsIt = firstSolution.getRequests().stream()
 						.filter(r -> r.getType() == RequestType.PICKUP)
 						.map(r -> (PickupRequest) r)
-						.filter(r -> requestIds.contains(r.getId()))
+						.filter(r -> requestsIds.contains(r.getId()))
 						.collect(Collectors.toList())
 						.iterator();
 				
@@ -358,5 +369,3 @@ public class AdaptiveMemory {
 		}
 	}
 }
-
-

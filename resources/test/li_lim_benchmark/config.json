@@ -1,18 +1,22 @@
 {
 	"tests": [
 		{
-			"requestsPath": "resources/test/data/lc101.txt",
+			"requestsPath": "resources/test/data/lc106.txt",
 			"vehiclesPath": "resources/test/li_lim_benchmark/vehicles.json",
 			"outputPath": "resources/test/li_lim_benchmark/",
-			"dynamic": false,
+			"dynamic": true,
+			"iterations": 100,
+			"decompositionCycles": 1,
+			"iterationsPerDecomposition": 1,
+			"maxVehiclesInGroup": 5,
 			"algorithms": {
-				"generation": "sector",
+				"generation": "sweep",
 				"insertion": "greedy",
-				"removal": "random",
+				"removal": "worst",
 				"optimization": "tabu",
+				"decomposition": "sweep",
 				"objective": "total_distance",
-				"scheduler": "drive_first",
-				"decomposition": "sweep"
+				"scheduler": "drive_first"
 			}
 		}
 	]

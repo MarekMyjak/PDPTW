@@ -7,7 +7,6 @@ import org.json.simple.parser.ParseException;
 
 import pl.edu.agh.io.pdptw.algorithm.dynamic.RequestDispatcher;
 import pl.edu.agh.io.pdptw.algorithm.generation.GenerationAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.optimization.DecompositionOptimizer;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
@@ -36,7 +35,6 @@ public class Main {
     			AlgorithmConfiguration algs = configuration.getAlgorithms();
     			GenerationAlgorithm generation = algs.getGenerationAlgorithm();
     			Solution solution = null;
-    			Objective objective = algs.getObjective();
     			
     			if (configuration.isDynamic()) {
     				LoggingUtils.info("Dynamic version detected");
@@ -49,15 +47,9 @@ public class Main {
     				LoggingUtils.info("Static version detected");
     				solution = generation.generateSolution(requests, vehicles, configuration);
     				LoggingUtils.info("Original objective value: " + solution.getObjectiveValue());
-    				DecompositionOptimizer optimizer = new DecompositionOptimizer(solution, 3, configuration);
+    				DecompositionOptimizer optimizer = new DecompositionOptimizer(solution, configuration);
     				optimizer.startThread();
     			}
-    			
-    			Thread.sleep(60000);
-    			LoggingUtils.info("requests total: " + requests.size());
-    			LoggingUtils.info("inserted total: " + solution.getRequests().size());
-    			LoggingUtils.info("vehicles used: " + solution.getVehicles().size());
-    			LoggingUtils.info("Objective value :" + objective.calculate(solution));
     		}
 
 		} catch (InvalidFileFormatException | ParseException | IllegalArgumentException e) {

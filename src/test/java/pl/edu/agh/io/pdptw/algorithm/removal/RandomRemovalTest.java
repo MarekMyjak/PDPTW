@@ -17,10 +17,7 @@ public class RandomRemovalTest {
 		Solution s = DataGenerator.generateSolution(6);
 		System.out.println("Before: " + s);
 		RemovalAlgorithm alg = new RandomRemoval();
-		Configuration config = new Configuration("", "", "", false, 
-				AlgorithmConfiguration.createBuilder()
-					.setRemovalAlgorithm(new RandomRemoval())
-					.build());
+		Configuration config = DataGenerator.generateConfiguration();
 		
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		Request pickup = alg.removeRequestFromSolution(s, config);

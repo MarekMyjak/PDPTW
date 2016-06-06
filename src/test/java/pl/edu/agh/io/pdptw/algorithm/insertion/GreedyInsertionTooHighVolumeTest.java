@@ -9,6 +9,7 @@ import org.junit.Test;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.DeliveryRequest;
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
@@ -40,9 +41,9 @@ public class GreedyInsertionTooHighVolumeTest {
 		Vehicle vehicle = new Vehicle("test_truck", 200, new Location(0, 0));
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
-		
+		Configuration configuration = DataGenerator.generateConfiguration();
 		boolean expected = false;
-		boolean actual = insertionAlg.insertRequestForVehicle(pickup, vehicle, objective);
+		boolean actual = insertionAlg.insertRequestForVehicle(pickup, vehicle, configuration);
 		assertEquals(expected, actual);
 	}
 }

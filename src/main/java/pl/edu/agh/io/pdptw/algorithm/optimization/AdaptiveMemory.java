@@ -29,12 +29,14 @@ public class AdaptiveMemory {
 	private final int SIZE;
 	private final Objective objective;
 	private final InsertionAlgorithm insertionAlg;
+	private final Configuration configuration;
 	
 	public AdaptiveMemory(int size, Configuration configuration) {
 		this.SIZE = size;
 		this.solutions = new ArrayList<>(SIZE);
 		this.objective = configuration.getAlgorithms().getObjective();
 		this.insertionAlg = configuration.getAlgorithms().getInsertionAlgorithm();
+		this.configuration = configuration;
 	}
 	
 	/* a simplified version of checking whether
@@ -345,7 +347,7 @@ public class AdaptiveMemory {
 				boolean insertedSuccessfully = true;
 				while (leftRequestsIt.hasNext() && insertedSuccessfully) {
 					PickupRequest pickup = leftRequestsIt.next();
-					insertedSuccessfully = insertionAlg.insertRequestToSolution(pickup, newSolution, objective);
+					insertedSuccessfully = insertionAlg.insertRequestToSolution(pickup, newSolution, configuration);
 				}
 				
 				/* if inserting all requests is not possible

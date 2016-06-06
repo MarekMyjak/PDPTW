@@ -70,7 +70,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 			
 			if (pickupWithoutVehicle != null) {
 				insertionAlg.insertRequestForVehicle(
-						pickupWithoutVehicle, curVehicle, objective);
+						pickupWithoutVehicle, curVehicle, configuration);
 				pickupWithoutVehicle = null;
 			}
 			
@@ -78,7 +78,7 @@ public class SweepGeneration implements GenerationAlgorithm {
 					&& pickupIt.hasNext()) {
 				
 				PickupRequest curRequest = pickupIt.next();
-				insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, objective);
+				insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, configuration);
 				
 				if (!insertedSuccessfully) {
 					pickupWithoutVehicle = curRequest;

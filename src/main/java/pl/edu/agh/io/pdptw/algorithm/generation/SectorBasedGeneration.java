@@ -62,7 +62,7 @@ public class SectorBasedGeneration implements GenerationAlgorithm {
 			
 			PickupRequest curRequest = pickupRequests.remove(0); 
 			Vehicle curVehicle = vehiclesIt.next();
-			insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, objective);
+			insertedSuccessfully = insertionAlg.insertRequestForVehicle(curRequest, curVehicle, configuration);
 			Location pickupLocation = curRequest.getLocation();
 			Location deliveryLocation = curRequest.getSibling().getLocation();
 			
@@ -97,7 +97,7 @@ public class SectorBasedGeneration implements GenerationAlgorithm {
 			while (sectorIt.hasNext()) {
 				PickupRequest pickupToInsert = sectorIt.next();
 				insertedSuccessfully = insertionAlg.insertRequestForVehicle(
-						pickupToInsert, curVehicle, objective);
+						pickupToInsert, curVehicle, configuration);
 				
 				/* Remove the newly dispatched request from the 
 				 * general and sector pools */
@@ -136,7 +136,7 @@ public class SectorBasedGeneration implements GenerationAlgorithm {
 				while (insertedSuccessfully && nearestIt.hasNext()) {
 					PickupRequest nearestRequest = nearestIt.next();
 					insertedSuccessfully = insertionAlg.insertRequestForVehicle(
-							nearestRequest, curVehicle, objective);
+							nearestRequest, curVehicle, configuration);
 					if (insertedSuccessfully) {
 						pickupRequests.remove(nearestRequest);
 					}

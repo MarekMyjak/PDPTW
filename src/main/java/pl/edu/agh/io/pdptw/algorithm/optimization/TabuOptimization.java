@@ -178,7 +178,7 @@ public class TabuOptimization implements OptimizationAlgorithm {
 							: prevEjected.getSibling());
 				
 					insertedSuccessfully = insertion.insertRequestForVehicle(
-							pickupToInsert, curVehicle, objective);
+							pickupToInsert, curVehicle, configuration);
 					
 					/* if insertion is not possible 
 					 * restore the provious state 
@@ -216,11 +216,8 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			insertedSuccessfully = false;
 			
 			while (it.hasNext() && !insertedSuccessfully) {
-				if (prevVehicle.getRoute().getRequests().contains(pickupToInsert)) {
-					System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>already inserted");
-				}
 				insertedSuccessfully = insertion.insertRequestForVehicle(
-						pickupToInsert, prevVehicle, objective);
+						pickupToInsert, prevVehicle, configuration);
 				prevVehicle = it.next();
 			}
 			
@@ -240,7 +237,6 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			}
 		}
 		
-//		System.out.println("--------------");
 		return neighbors;
 	}
 

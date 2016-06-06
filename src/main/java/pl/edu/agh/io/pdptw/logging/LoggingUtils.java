@@ -29,7 +29,9 @@ public class LoggingUtils {
 		consoleAppender.setThreshold(Level.INFO);
 		consoleAppender.activateOptions();
 		logger.addAppender(consoleAppender);
-		
+	}
+	
+	public static void configure(Configuration configuration) {
 		FileAppender fileAppender = new FileAppender();
 		fileAppender.setName("FileLogger");
 		fileAppender.setFile("optimization.log");
@@ -38,11 +40,17 @@ public class LoggingUtils {
 		fileAppender.setAppend(true);
 		fileAppender.activateOptions();
 		logger.addAppender(fileAppender);
-	}
-	
-	public static void configure(Configuration configuration) {
-		FileAppender fileAppender = (FileAppender) logger.getAppender("FileLogger");
-		fileAppender.setFile(configuration.getOutputPath() + "optimization.log");
+		
+		String[] requestsPathElements = configuration.getRequestsPath().split("/");
+        String requestsFileName = requestsPathElements[requestsPathElements.length - 1];  
+		String optimizationLogFileName = configuration.getOutputPath() 
+				+ requestsFileName 
+				+ "_" + configuration.getIterations()
+				+ "_" + configuration.getAlgorithms().getGenerationAlgorithm()
+					.getClass().getSimpleName() + "_" + "optimization.log";
+		
+		fileAppender.setFile(optimizationLogFileName);
+		logger.addAppender(fileAppender);
 	}
 	
 	public static void info(Object message) {

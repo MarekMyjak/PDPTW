@@ -1,6 +1,7 @@
 package pl.edu.agh.io.pdptw.algorithm.insertion;
 
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.*;
 
 import java.util.List;
@@ -12,9 +13,10 @@ public class GreedyInsertion implements InsertionAlgorithm {
      * requests pool */
 
 	@Override
-	public boolean insertRequestForVehicle(PickupRequest pickup, Vehicle vehicle, Objective objective) {
+	public boolean insertRequestForVehicle(PickupRequest pickup, Vehicle vehicle, Configuration configuration) {
+		
 		RequestPositions bestPosition = 
-				findBestInsertionPositions(pickup, vehicle, objective);
+				findBestInsertionPositions(pickup, vehicle, configuration);
 		boolean inserted = false;
 		
 		if (bestPosition.getPickupPosition() != Integer.MAX_VALUE
@@ -30,8 +32,9 @@ public class GreedyInsertion implements InsertionAlgorithm {
 
 	@Override
 	public RequestPositions findBestInsertionPositions(
-			PickupRequest pickup, Vehicle vehicle, Objective objective) {
+			PickupRequest pickup, Vehicle vehicle, Configuration configuration) {
 		
+		Objective objective = configuration.getAlgorithms().getObjective();
 		int pickupPosition = Integer.MAX_VALUE;
 		int deliveryPosition = Integer.MAX_VALUE;
 		double minObjective = Integer.MAX_VALUE;
@@ -69,7 +72,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 
 	@Override
 	public boolean insertRequestToSolution(PickupRequest pickup,
-			Solution solution, Objective objective) {
+			Solution solution, Configuration configuration) {
 		
 		double minValue = Integer.MAX_VALUE;
 		RequestPositions bestPosition = RequestPositions.createDefault();
@@ -78,7 +81,7 @@ public class GreedyInsertion implements InsertionAlgorithm {
 		
 		for (Vehicle vehicle : solution.getVehicles()) {
 			RequestPositions curPosition = 
-					findBestInsertionPositions(pickup, vehicle, objective);		
+					findBestInsertionPositions(pickup, vehicle, configuration);		
 			
 			if (curPosition.getObjectiveValue() < minValue) {
 				bestPosition = curPosition;

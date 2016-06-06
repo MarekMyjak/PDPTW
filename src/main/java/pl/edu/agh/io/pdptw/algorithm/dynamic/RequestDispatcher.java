@@ -105,14 +105,14 @@ public class RequestDispatcher {
 					LoggingUtils.info("Inserting: " + pickup.getId() 
 							+ " (arrival time: " + pickup.getArrivalTime() + ")");
 					insertedSuccessfully = insertion.insertRequestToSolution(
-							pickup, solution, objective);
+							pickup, solution, configuration);
 					
 					if (!insertedSuccessfully) {
 						Vehicle spareVehicle = vehicles.get(vehiclesUsed);
 						spareCopies.add(spareVehicle);	
 						
 						LoggingUtils.info("Vehicle [" + spareVehicle.getId() + "] has been used");
-						insertion.insertRequestForVehicle(pickup, spareVehicle, objective);
+						insertion.insertRequestForVehicle(pickup, spareVehicle, configuration);
 						solution.getVehicles().add(spareVehicle);
 						vehiclesUsed++;
 					}
@@ -127,7 +127,7 @@ public class RequestDispatcher {
 					for (Solution s : adaptiveMemory.getSolutions()) {
 						int spareCopiesUsed = 0;
 						for (PickupRequest pickup : pickups) {
-							insertedSuccessfully = insertion.insertRequestToSolution(pickup, s, objective);
+							insertedSuccessfully = insertion.insertRequestToSolution(pickup, s, configuration);
 							
 							if (!insertedSuccessfully) {
 								Vehicle spareCopy;

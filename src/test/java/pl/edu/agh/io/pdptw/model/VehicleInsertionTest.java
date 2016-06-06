@@ -7,6 +7,7 @@ import org.junit.Test;
 import pl.edu.agh.io.pdptw.algorithm.insertion.GreedyInsertion;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
 public class VehicleInsertionTest {
@@ -19,13 +20,13 @@ public class VehicleInsertionTest {
 		InsertionAlgorithm insertion = new GreedyInsertion();
 		p.setSibling(d);
 		d.setSibling(p);
-		
+		Configuration configuration = DataGenerator.generateConfiguration();
 		System.out.println(v);
 		System.out.println("--------------------");
 		System.out.println(p);
 		System.out.println(d);
 		System.out.println("--------------------");
-		insertion.insertRequestForVehicle(p, v, new TotalDistanceObjective());
+		insertion.insertRequestForVehicle(p, v, configuration);
 		System.out.println(v);
 		System.out.println("--------------------");
 		System.out.println(p);

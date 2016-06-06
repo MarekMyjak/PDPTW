@@ -1,9 +1,11 @@
 package pl.edu.agh.io.pdptw.algorithm.insertion;
 
 import org.junit.Test;
+
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
+import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.*;
 import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 
@@ -34,9 +36,9 @@ public class GreedyInsertionWideTimeWindowTest {
 		Vehicle vehicle = new Vehicle("test_truck", 200, new Location(0, 0));
 		vehicle.setRoute(route);
 		Vehicle.setScheduler(new DriveFirstScheduler());
-		
+		Configuration configuration = DataGenerator.generateConfiguration();
 		boolean expected = true;
-		boolean actual = insertionAlg.insertRequestForVehicle(pickup, vehicle, objective);
+		boolean actual = insertionAlg.insertRequestForVehicle(pickup, vehicle, configuration);
 		assertEquals(expected, actual);
 	}
 }

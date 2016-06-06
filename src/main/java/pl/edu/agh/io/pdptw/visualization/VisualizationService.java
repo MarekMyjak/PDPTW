@@ -25,14 +25,16 @@ public class VisualizationService {
                     request.getTimeWindowStart(), request.getTimeWindowEnd(), request.getServiceTime(),
                     request.getRealizationTime(), request.getArrivalTime(), request.getType())));
             visualizationData.add(new VisualizationData(vehicle.getId(), vehicle.getMaxCapacity(),
-                    vehicle.getCurrentlyLoaded(), vehicle.getLocation(), vehicle.getStartLocation(),
-                    routes));
+                   vehicle.getLocation(), vehicle.getStartLocation(), routes));
         });
 
         Gson gson = new Gson();
         String json = gson.toJson(visualizationData);
         String[] requestsPathElements = configuration.getRequestsPath().split("/");
-        String fileName = requestsPathElements[requestsPathElements.length - 1] + "_dynamic";
+        String fileName = requestsPathElements[requestsPathElements.length - 1]  
+				+ "_" + configuration.getIterations()
+				+ "_" + configuration.getAlgorithms()
+					.getGenerationAlgorithm().getClass().getSimpleName();
         
         LoggingUtils.info("Saving solution data under: " + configuration.getOutputPath() + fileName);
         File outputFile = new File(configuration.getOutputPath() + fileName);

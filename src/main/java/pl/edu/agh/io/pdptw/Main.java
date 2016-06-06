@@ -28,6 +28,10 @@ public class Main {
     			= loader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
     		
     		for (Configuration configuration : testConfigurations) {
+    			
+    			/* configure logger */
+    			LoggingUtils.configure(configuration);
+    			
     			Vehicle.setScheduler(configuration.getAlgorithms().getScheduler());
     			List<Request> requests = loader.loadRequests(configuration);
     			List<Vehicle> vehicles = loader.loadVehicles(configuration);

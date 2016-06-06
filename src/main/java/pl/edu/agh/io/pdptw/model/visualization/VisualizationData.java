@@ -9,7 +9,6 @@ import java.util.List;
 public class VisualizationData {
     String truckId;
     Integer maxCapacity;
-    Integer currentlyLoaded;
     Location location;
     Location startLocation;
     List<VisualizationRoute> routes;

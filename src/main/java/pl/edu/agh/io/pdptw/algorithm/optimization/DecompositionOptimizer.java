@@ -82,6 +82,7 @@ public class DecompositionOptimizer implements Runnable {
 			LoggingUtils.info("A decomposition cycle has been finished");
 			try {
 				visualizationService.makeVisualizationData(solution, configuration);
+				LoggingUtils.saveResult(solution, configuration);
 			} catch (IOException e) {
 				LoggingUtils.logStackTrace(e);
 			}

@@ -22,7 +22,6 @@ import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 public class Vehicle {
     private final String id;
     private final Integer maxCapacity;
-    private Integer currentlyLoaded;
     private Location location;
     private final Location startLocation;
     private Route route;
@@ -34,7 +33,7 @@ public class Vehicle {
 	public Vehicle(String id, Integer maxCapacity,
 			Location startLocation) {
 		
-		this(id, maxCapacity, 0, startLocation, startLocation, 
+		this(id, maxCapacity, startLocation, startLocation, 
 				new Route(new ArrayList<>()), new LinkedList<>());
 	}
 	
@@ -312,8 +311,8 @@ public class Vehicle {
 	@Override
 	public String toString() {
 		String representation = String.format(
-				"id: %s, max capacity: %d, currently loaded: %d, location: (%d, %d), route: \n[\n",
-				id, maxCapacity, currentlyLoaded, location.getX(), location.getY());
+				"id: %s, max capacity: %d, location: (%d, %d), route: \n[\n",
+				id, maxCapacity, location.getX(), location.getY());
 		List<String> requestsStrings = route.getRequests().stream()
 				.map(Request::toString)
 				.collect(Collectors.toList());
@@ -328,7 +327,6 @@ public class Vehicle {
 	
 	public Vehicle createShallowCopy() {
 		Vehicle copy = new Vehicle(id, maxCapacity, startLocation);
-		copy.setCurrentlyLoaded(currentlyLoaded);
 		copy.setLocation(location);
 		copy.setRoute(route);
 		
@@ -337,7 +335,6 @@ public class Vehicle {
 	
 	public Vehicle copy() {
 		Vehicle copy = new Vehicle(id, maxCapacity, startLocation);
-		copy.setCurrentlyLoaded(currentlyLoaded);
 		copy.setLocation(location);
 		copy.setRoute(route.copy());
 		

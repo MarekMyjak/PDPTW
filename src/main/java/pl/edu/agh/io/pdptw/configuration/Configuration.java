@@ -18,4 +18,24 @@ public class Configuration {
 	private int maxVehiclesInGroup;
 	private Location warehouseLocation;
 	private AlgorithmConfiguration algorithms;
+	
+	@Override
+	public String toString() {
+		return "requestsPath: " + requestsPath
+				+ "\r\nvehiclesPath: " + vehiclesPath
+				+ "\r\noutputPath: " + outputPath
+				+ "\r\ndynamic: " + isDynamic()
+				+ "\r\niterations: " + iterations
+				+ "\r\ndecompositionCycles: " + decompositionCycles
+				+ "\r\niterationsPerDecomposition: " + iterationsPerDecomposition
+				+ "\r\nmaxVehiclesInGroup: " + maxVehiclesInGroup
+				+ "\r\nalgorithms:" 
+					+ "\r\n\tgeneration: " + algorithms.getGenerationAlgorithm().getClass().getSimpleName()  
+					+ "\r\n\tinsertion: " + algorithms.getInsertionAlgorithm().getClass().getSimpleName() 
+					+ "\r\n\tremoval: " + algorithms.getRemovalAlgorithm().getClass().getSimpleName() 
+					+ "\r\n\toptimization: " + algorithms.getOptimizationAlgorithm().getClass().getSimpleName() 
+					+ "\r\n\tdecomposition: " + algorithms.getDecompositionAlgorithm().getClass().getSimpleName() 
+					+ "\r\n\tobjective: " + algorithms.getObjective().getClass().getSimpleName() 
+					+ "\r\n\tscheduler: " + algorithms.getScheduler().getClass().getSimpleName();
+	}
 }

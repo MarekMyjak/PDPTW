@@ -139,7 +139,6 @@ public class RequestDispatcher {
 									Vehicle spareVehicle = spareCopies.get(spareCopiesUsed);
 									spareCopy = spareVehicle.createShallowCopy();
 									spareCopy.setLocation(spareCopy.getStartLocation());
-									spareCopy.setCurrentlyLoaded(0);
 									spareCopy.setRoute(new Route(new LinkedList<>()));
 								}
 								

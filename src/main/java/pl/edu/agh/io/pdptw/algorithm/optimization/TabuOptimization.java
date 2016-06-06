@@ -168,10 +168,6 @@ public class TabuOptimization implements OptimizationAlgorithm {
 			
 			for (int j = 0; j < maxChainLength; j++) {
 				Vehicle curVehicle = ListUtils.getRandomElement(vehicles);
-//				if (prevEjected.getId().equals(100)) {
-//				System.out.println("" + (j + 1) + ". :" + prevVehicle.getId() + " cur: " + curVehicle.getId()
-//						+ ", p: " + prevEjected.getId() + " d: " + prevEjected.getSibling().getId());
-//				}
 				
 				if (curVehicle.getRoute().getRequests().size() > 0) {
 					Route routeCopy = new Route(new ArrayList<>(curVehicle.getRoute().getRequests()));

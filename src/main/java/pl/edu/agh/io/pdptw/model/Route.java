@@ -12,7 +12,7 @@ import lombok.Getter;
 @EqualsAndHashCode
 
 public class Route {
-	private final List<Request> requests;
+	private List<Request> requests;
 	
 	public Route(List<Request> requests) {
 		super();

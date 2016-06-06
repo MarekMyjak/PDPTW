@@ -34,7 +34,8 @@ public class WorstRemoval implements RemovalAlgorithm {
 		Route route = vehicle.getRoute();
 		List<PickupRequest> pickupRequests = route.getRequests()
 				.stream()
-				.filter(r -> r.getType() == RequestType.PICKUP)
+				.filter(r -> r.getType() == RequestType.PICKUP
+						&& !vehicle.getServedRequestsIds().contains(r.getId()))
 				.map(r -> (PickupRequest) r)
 				.collect(Collectors.toList());
 		

@@ -2,6 +2,7 @@ package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,6 +26,7 @@ public class Vehicle {
     private Location location;
     private final Location startLocation;
     private Route route;
+    private List<Integer> servedRequestsIds;
     
     /* note the static keyword */
     @Setter @Getter private static Scheduler scheduler = new DriveFirstScheduler();
@@ -33,7 +35,7 @@ public class Vehicle {
 			Location startLocation) {
 		
 		this(id, maxCapacity, 0, startLocation, startLocation, 
-				new Route(new ArrayList<>()));
+				new Route(new ArrayList<>()), new LinkedList<>());
 	}
 	
 	public List<Request> removeFinishedRequests(int time, boolean shouldLog) {
@@ -73,6 +75,10 @@ public class Vehicle {
 									? r : r.getSibling());
 					return delivery.getRealizationTime() > time;
 				})
+				.collect(Collectors.toList()));
+		
+		servedRequestsIds.addAll(removedRequests.stream()
+				.map(r -> r.getId())
 				.collect(Collectors.toList()));
 		
 		return removedRequests;

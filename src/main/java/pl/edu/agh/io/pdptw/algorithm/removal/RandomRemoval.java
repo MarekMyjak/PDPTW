@@ -1,6 +1,7 @@
 package pl.edu.agh.io.pdptw.algorithm.removal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import pl.edu.agh.io.pdptw.algorithm.optimization.ListUtils;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
@@ -18,10 +19,13 @@ public class RandomRemoval implements RemovalAlgorithm {
 			Configuration configuration) {
 		
 		List<Request> requests = vehicle.getRoute().getRequests();
-		Request chosenRequest = ListUtils.getRandomElement(requests);
-		PickupRequest pickup = (PickupRequest) ((chosenRequest.getType() == RequestType.PICKUP)
-				? chosenRequest
-				: chosenRequest.getSibling());
+		List<PickupRequest> pickupRequests = requests
+				.stream()
+				.filter(r -> r.getType() == RequestType.PICKUP
+						&& !vehicle.getServedRequestsIds().contains(r.getId()))
+				.map(r -> (PickupRequest) r)
+				.collect(Collectors.toList());
+		PickupRequest pickup = ListUtils.getRandomElement(pickupRequests);
 		
 		return new RequestPositions(requests.indexOf(pickup),
 				requests.indexOf(pickup.getSibling()));

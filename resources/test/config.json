@@ -1,7 +1,7 @@
 {
 	"tests": [
 		{
-			"requestsPath": "resources/test/data/lc103.txt",
+			"requestsPath": "resources/test/data/lc105.txt",
 			"vehiclesPath": "resources/test/li_lim_benchmark/vehicles.json",
 			"outputPath": "resources/test/li_lim_benchmark/results/",
 			"dynamic": true,

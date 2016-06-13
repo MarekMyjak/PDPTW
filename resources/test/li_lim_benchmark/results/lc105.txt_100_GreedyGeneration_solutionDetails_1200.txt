@@ -1,0 +1,27 @@
+Date: 2016-06-13
+requestsPath: resources/test/data/lc105.txt
+vehiclesPath: resources/test/li_lim_benchmark/vehicles.json
+outputPath: resources/test/li_lim_benchmark/results/
+dynamic: true
+iterations: 100
+decompositionCycles: 3
+iterationsPerDecomposition: 3
+maxVehiclesInGroup: 5
+algorithms:
+	generation: GreedyGeneration
+	insertion: GreedyInsertion
+	removal: WorstRemoval
+	optimization: TabuOptimization
+	decomposition: SweepDecomposition
+	objective: TotalDistanceObjective
+	scheduler: DriveFirstScheduler
+
+Objective value: 39.23712908961849
+Vehicles used: 1
+Requests: 2
+
+Solution(vehicles=[id: truck10, max capacity: 200, location: (40, 50), route: 
+[
+	id: 49, type: RequestType(name=pickup), loc: Location(x=28, y=35, polarAngle=0.0), earliest: 969, realt: 969, latest: 1098, realfinished: 1059, servt: 90, sid: 47, v: 10
+	id: 47, type: RequestType(name=delivery), loc: Location(x=30, y=35, polarAngle=0.0), earliest: 982, realt: 1061, latest: 1127, realfinished: 1151, servt: 90, sid: 49, v: -10
+]], objectiveValue=39.23712908961849)

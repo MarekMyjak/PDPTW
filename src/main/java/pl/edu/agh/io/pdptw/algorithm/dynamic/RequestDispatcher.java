@@ -180,12 +180,18 @@ public class RequestDispatcher {
 					.filter(v -> v.getRoute().getRequests().size() > 0)
 					.collect(Collectors.toList()));
 			
-			adaptiveMemory.getSolutions().forEach(
-					s -> s.setVehicles(
+			adaptiveMemory.getSolutions()
+				.forEach(s -> s.setVehicles(
 							s.getVehicles().stream()
 								.filter(v -> v.getRoute().getRequests().size() > 0)
 								.collect(Collectors.toList())
 							));
+			
+			/* update objective values */
+			
+			solution.updateOjectiveValue(objective);
+			adaptiveMemory.getSolutions()
+				.forEach(s -> s.updateOjectiveValue(objective));
 			
 			/* print current requests for each vehicle from
 			 * the chosen solution */

@@ -5,7 +5,7 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Value
-public class AlgorithmsDescription {
+public class AlgorithmDescription {
 	String generationAlgorithmName;
 	String insertionAlgorithmName;
 	String removalAlgorithmName;

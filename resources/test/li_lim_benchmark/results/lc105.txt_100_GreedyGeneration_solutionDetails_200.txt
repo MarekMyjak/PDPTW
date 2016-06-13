@@ -1,0 +1,105 @@
+Date: 2016-06-13
+requestsPath: resources/test/data/lc105.txt
+vehiclesPath: resources/test/li_lim_benchmark/vehicles.json
+outputPath: resources/test/li_lim_benchmark/results/
+dynamic: true
+iterations: 100
+decompositionCycles: 3
+iterationsPerDecomposition: 3
+maxVehiclesInGroup: 5
+algorithms:
+	generation: GreedyGeneration
+	insertion: GreedyInsertion
+	removal: WorstRemoval
+	optimization: TabuOptimization
+	decomposition: SweepDecomposition
+	objective: TotalDistanceObjective
+	scheduler: DriveFirstScheduler
+
+Objective value: 760.1382999639136
+Vehicles used: 10
+Requests: 62
+
+Solution(vehicles=[id: truck5, max capacity: 200, location: (40, 50), route: 
+[
+	id: 43, type: RequestType(name=pickup), loc: Location(x=33, y=35, polarAngle=0.0), earliest: 16, realt: 16, latest: 144, realfinished: 106, servt: 90, sid: 44, v: 10
+	id: 42, type: RequestType(name=pickup), loc: Location(x=33, y=32, polarAngle=0.0), earliest: 27, realt: 109, latest: 190, realfinished: 199, servt: 90, sid: 48, v: 20
+	id: 41, type: RequestType(name=pickup), loc: Location(x=35, y=32, polarAngle=0.0), earliest: 132, realt: 201, latest: 269, realfinished: 291, servt: 90, sid: 40, v: 10
+	id: 40, type: RequestType(name=delivery), loc: Location(x=35, y=30, polarAngle=0.0), earliest: 236, realt: 293, latest: 349, realfinished: 383, servt: 90, sid: 41, v: -10
+	id: 44, type: RequestType(name=delivery), loc: Location(x=32, y=30, polarAngle=0.0), earliest: 332, realt: 386, latest: 439, realfinished: 476, servt: 90, sid: 43, v: -10
+	id: 48, type: RequestType(name=delivery), loc: Location(x=28, y=30, polarAngle=0.0), earliest: 601, realt: 601, latest: 724, realfinished: 691, servt: 90, sid: 42, v: -20
+], id: truck3, max capacity: 200, location: (40, 50), route: 
+[
+	id: 20, type: RequestType(name=pickup), loc: Location(x=30, y=50, polarAngle=0.0), earliest: 10, realt: 10, latest: 137, realfinished: 100, servt: 90, sid: 24, v: 10
+	id: 24, type: RequestType(name=delivery), loc: Location(x=25, y=50, polarAngle=0.0), earliest: 25, realt: 105, latest: 184, realfinished: 195, servt: 90, sid: 20, v: -10
+	id: 25, type: RequestType(name=pickup), loc: Location(x=25, y=52, polarAngle=0.0), earliest: 142, realt: 197, latest: 251, realfinished: 287, servt: 90, sid: 27, v: 40
+	id: 27, type: RequestType(name=delivery), loc: Location(x=23, y=52, polarAngle=0.0), earliest: 234, realt: 289, latest: 343, realfinished: 379, servt: 90, sid: 25, v: -40
+], id: truck4, max capacity: 200, location: (40, 50), route: 
+[
+	id: 13, type: RequestType(name=pickup), loc: Location(x=22, y=75, polarAngle=0.0), earliest: 30, realt: 30, latest: 155, realfinished: 120, servt: 90, sid: 18, v: 30
+	id: 17, type: RequestType(name=pickup), loc: Location(x=18, y=75, polarAngle=0.0), earliest: 75, realt: 124, latest: 172, realfinished: 214, servt: 90, sid: 12, v: 20
+	id: 18, type: RequestType(name=delivery), loc: Location(x=15, y=75, polarAngle=0.0), earliest: 142, realt: 217, latest: 291, realfinished: 307, servt: 90, sid: 13, v: -30
+	id: 19, type: RequestType(name=pickup), loc: Location(x=15, y=80, polarAngle=0.0), earliest: 244, realt: 312, latest: 379, realfinished: 402, servt: 90, sid: 15, v: 10
+	id: 15, type: RequestType(name=delivery), loc: Location(x=20, y=80, polarAngle=0.0), earliest: 362, realt: 407, latest: 451, realfinished: 497, servt: 90, sid: 19, v: -10
+	id: 12, type: RequestType(name=delivery), loc: Location(x=25, y=85, polarAngle=0.0), earliest: 617, realt: 617, latest: 756, realfinished: 707, servt: 90, sid: 17, v: -20
+], id: truck9, max capacity: 200, location: (40, 50), route: 
+[
+	id: 90, type: RequestType(name=pickup), loc: Location(x=60, y=55, polarAngle=0.0), earliest: 20, realt: 20, latest: 148, realfinished: 110, servt: 90, sid: 85, v: 10
+	id: 87, type: RequestType(name=pickup), loc: Location(x=65, y=55, polarAngle=0.0), earliest: 56, realt: 115, latest: 173, realfinished: 205, servt: 90, sid: 89, v: 20
+	id: 86, type: RequestType(name=pickup), loc: Location(x=66, y=55, polarAngle=0.0), earliest: 141, realt: 206, latest: 270, realfinished: 296, servt: 90, sid: 91, v: 10
+	id: 83, type: RequestType(name=pickup), loc: Location(x=72, y=55, polarAngle=0.0), earliest: 228, realt: 302, latest: 375, realfinished: 392, servt: 90, sid: 84, v: 10
+	id: 84, type: RequestType(name=delivery), loc: Location(x=70, y=58, polarAngle=0.0), earliest: 425, realt: 425, latest: 556, realfinished: 515, servt: 90, sid: 83, v: -10
+	id: 85, type: RequestType(name=delivery), loc: Location(x=68, y=60, polarAngle=0.0), earliest: 527, realt: 527, latest: 640, realfinished: 617, servt: 90, sid: 90, v: -10
+	id: 89, type: RequestType(name=delivery), loc: Location(x=63, y=58, polarAngle=0.0), earliest: 705, realt: 705, latest: 834, realfinished: 795, servt: 90, sid: 87, v: -20
+	id: 91, type: RequestType(name=delivery), loc: Location(x=60, y=60, polarAngle=0.0), earliest: 809, realt: 809, latest: 916, realfinished: 899, servt: 90, sid: 86, v: -10
+], id: truck7, max capacity: 200, location: (40, 50), route: 
+[
+	id: 67, type: RequestType(name=pickup), loc: Location(x=47, y=40, polarAngle=0.0), earliest: 12, realt: 51, latest: 143, realfinished: 141, servt: 90, sid: 64, v: 10
+	id: 65, type: RequestType(name=pickup), loc: Location(x=48, y=40, polarAngle=0.0), earliest: 50, realt: 142, latest: 155, realfinished: 142, servt: 0, sid: 103, v: 10
+	id: 103, type: RequestType(name=delivery), loc: Location(x=48, y=40, polarAngle=0.0), earliest: 50, realt: 142, latest: 155, realfinished: 232, servt: 90, sid: 65, v: -10
+	id: 63, type: RequestType(name=pickup), loc: Location(x=50, y=40, polarAngle=0.0), earliest: 147, realt: 234, latest: 242, realfinished: 324, servt: 90, sid: 72, v: 50
+	id: 62, type: RequestType(name=pickup), loc: Location(x=50, y=35, polarAngle=0.0), earliest: 235, realt: 329, latest: 344, realfinished: 419, servt: 90, sid: 69, v: 20
+	id: 72, type: RequestType(name=delivery), loc: Location(x=53, y=30, polarAngle=0.0), earliest: 422, realt: 424, latest: 533, realfinished: 514, servt: 90, sid: 63, v: -50
+	id: 64, type: RequestType(name=delivery), loc: Location(x=48, y=30, polarAngle=0.0), earliest: 601, realt: 601, latest: 724, realfinished: 691, servt: 90, sid: 67, v: -10
+	id: 69, type: RequestType(name=delivery), loc: Location(x=45, y=35, polarAngle=0.0), earliest: 889, realt: 889, latest: 996, realfinished: 979, servt: 90, sid: 62, v: -20
+], id: truck8, max capacity: 200, location: (40, 50), route: 
+[
+	id: 81, type: RequestType(name=pickup), loc: Location(x=85, y=35, polarAngle=0.0), earliest: 47, realt: 47, latest: 201, realfinished: 137, servt: 90, sid: 70, v: 30
+	id: 78, type: RequestType(name=pickup), loc: Location(x=88, y=35, polarAngle=0.0), earliest: 78, realt: 140, latest: 201, realfinished: 230, servt: 90, sid: 76, v: 20
+	id: 76, type: RequestType(name=delivery), loc: Location(x=90, y=35, polarAngle=0.0), earliest: 175, realt: 232, latest: 288, realfinished: 322, servt: 90, sid: 78, v: -20
+	id: 71, type: RequestType(name=pickup), loc: Location(x=95, y=35, polarAngle=0.0), earliest: 260, realt: 327, latest: 393, realfinished: 417, servt: 90, sid: 73, v: 20
+	id: 70, type: RequestType(name=delivery), loc: Location(x=95, y=30, polarAngle=0.0), earliest: 353, realt: 422, latest: 490, realfinished: 512, servt: 90, sid: 81, v: -30
+	id: 73, type: RequestType(name=delivery), loc: Location(x=92, y=30, polarAngle=0.0), earliest: 442, realt: 515, latest: 587, realfinished: 605, servt: 90, sid: 71, v: -20
+], id: truck1, max capacity: 200, location: (40, 50), route: 
+[
+	id: 5, type: RequestType(name=pickup), loc: Location(x=42, y=65, polarAngle=0.0), earliest: 15, realt: 15, latest: 120, realfinished: 105, servt: 90, sid: 3, v: 10
+	id: 3, type: RequestType(name=delivery), loc: Location(x=42, y=66, polarAngle=0.0), earliest: 25, realt: 106, latest: 186, realfinished: 196, servt: 90, sid: 5, v: -10
+	id: 7, type: RequestType(name=pickup), loc: Location(x=40, y=66, polarAngle=0.0), earliest: 142, realt: 198, latest: 253, realfinished: 288, servt: 90, sid: 9, v: 20
+	id: 8, type: RequestType(name=pickup), loc: Location(x=38, y=68, polarAngle=0.0), earliest: 220, realt: 290, latest: 359, realfinished: 380, servt: 90, sid: 4, v: 20
+	id: 9, type: RequestType(name=delivery), loc: Location(x=38, y=70, polarAngle=0.0), earliest: 499, realt: 499, latest: 640, realfinished: 589, servt: 90, sid: 7, v: -20
+	id: 4, type: RequestType(name=delivery), loc: Location(x=42, y=68, polarAngle=0.0), earliest: 699, realt: 699, latest: 810, realfinished: 789, servt: 90, sid: 8, v: -20
+], id: truck10, max capacity: 200, location: (40, 50), route: 
+[
+	id: 98, type: RequestType(name=pickup), loc: Location(x=58, y=75, polarAngle=0.0), earliest: 30, realt: 30, latest: 139, realfinished: 120, servt: 90, sid: 95, v: 20
+	id: 96, type: RequestType(name=pickup), loc: Location(x=60, y=80, polarAngle=0.0), earliest: 64, realt: 125, latest: 187, realfinished: 215, servt: 90, sid: 92, v: 10
+	id: 95, type: RequestType(name=delivery), loc: Location(x=62, y=80, polarAngle=0.0), earliest: 174, realt: 217, latest: 261, realfinished: 307, servt: 90, sid: 98, v: -20
+	id: 94, type: RequestType(name=pickup), loc: Location(x=65, y=82, polarAngle=0.0), earliest: 260, realt: 310, latest: 361, realfinished: 400, servt: 90, sid: 100, v: 10
+	id: 92, type: RequestType(name=delivery), loc: Location(x=67, y=85, polarAngle=0.0), earliest: 331, realt: 403, latest: 478, realfinished: 493, servt: 90, sid: 96, v: -10
+	id: 100, type: RequestType(name=delivery), loc: Location(x=55, y=85, polarAngle=0.0), earliest: 608, realt: 608, latest: 765, realfinished: 698, servt: 90, sid: 94, v: -10
+], id: truck6, max capacity: 200, location: (40, 50), route: 
+[
+	id: 57, type: RequestType(name=pickup), loc: Location(x=40, y=15, polarAngle=0.0), earliest: 35, realt: 35, latest: 140, realfinished: 125, servt: 90, sid: 56, v: 40
+	id: 55, type: RequestType(name=pickup), loc: Location(x=42, y=15, polarAngle=0.0), earliest: 63, realt: 127, latest: 190, realfinished: 217, servt: 90, sid: 58, v: 10
+	id: 54, type: RequestType(name=pickup), loc: Location(x=42, y=10, polarAngle=0.0), earliest: 150, realt: 222, latest: 293, realfinished: 312, servt: 90, sid: 53, v: 40
+	id: 53, type: RequestType(name=delivery), loc: Location(x=44, y=5, polarAngle=0.0), earliest: 255, realt: 317, latest: 378, realfinished: 407, servt: 90, sid: 54, v: -40
+	id: 56, type: RequestType(name=delivery), loc: Location(x=40, y=5, polarAngle=0.0), earliest: 359, realt: 411, latest: 462, realfinished: 501, servt: 90, sid: 57, v: -40
+	id: 58, type: RequestType(name=delivery), loc: Location(x=38, y=5, polarAngle=0.0), earliest: 439, realt: 503, latest: 566, realfinished: 593, servt: 90, sid: 55, v: -10
+], id: truck2, max capacity: 200, location: (40, 50), route: 
+[
+	id: 32, type: RequestType(name=pickup), loc: Location(x=10, y=40, polarAngle=0.0), earliest: 31, realt: 31, latest: 170, realfinished: 121, servt: 90, sid: 36, v: 30
+	id: 33, type: RequestType(name=pickup), loc: Location(x=8, y=40, polarAngle=0.0), earliest: 52, realt: 123, latest: 193, realfinished: 213, servt: 90, sid: 38, v: 40
+	id: 31, type: RequestType(name=pickup), loc: Location(x=10, y=35, polarAngle=0.0), earliest: 181, realt: 218, latest: 256, realfinished: 308, servt: 90, sid: 35, v: 20
+	id: 35, type: RequestType(name=delivery), loc: Location(x=5, y=35, polarAngle=0.0), earliest: 252, realt: 313, latest: 375, realfinished: 403, servt: 90, sid: 31, v: -20
+	id: 38, type: RequestType(name=delivery), loc: Location(x=0, y=40, polarAngle=0.0), earliest: 457, realt: 457, latest: 544, realfinished: 547, servt: 90, sid: 33, v: -40
+	id: 36, type: RequestType(name=delivery), loc: Location(x=5, y=45, polarAngle=0.0), earliest: 639, realt: 639, latest: 742, realfinished: 729, servt: 90, sid: 32, v: -30
+]], objectiveValue=760.1382999639136)

@@ -70,7 +70,7 @@ public class DefaultConfigReader implements ConfigReader {
 				String scheduler = (String) algorithms.get("scheduler");
 				String decompositionAlgorithm = (String) algorithms.get("decomposition");
 
-				AlgorithmsDescription description = new AlgorithmsDescription(
+				AlgorithmDescription description = new AlgorithmDescription(
 					generationAlgorithm,
 					insertionAlgorithm,
 					removalAlgorithm,

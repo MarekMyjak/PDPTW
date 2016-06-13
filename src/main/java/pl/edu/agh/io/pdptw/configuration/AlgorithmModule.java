@@ -29,7 +29,7 @@ import com.google.inject.AbstractModule;
 
 @AllArgsConstructor
 public class AlgorithmModule extends AbstractModule {
-	private final AlgorithmsDescription description;
+	private final AlgorithmDescription description;
 	
 	private static final Map<String, Class<? extends GenerationAlgorithm>> 
 		generationAlgorithms = new HashMap<>();

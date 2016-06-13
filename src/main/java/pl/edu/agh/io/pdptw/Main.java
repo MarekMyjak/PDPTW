@@ -25,7 +25,7 @@ public class Main {
     		LoggingUtils.info("Loading configuration data");
     		DefaultConfigReader loader = new DefaultConfigReader();
     		List<Configuration> testConfigurations
-    			= loader.loadConfiguration("resources/test/li_lim_benchmark/config.json");
+    			= loader.loadConfiguration("resources/test/config.json");
     		
     		for (Configuration configuration : testConfigurations) {
     			

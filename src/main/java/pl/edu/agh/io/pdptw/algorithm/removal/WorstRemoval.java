@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
+import pl.edu.agh.io.pdptw.model.DeliveryRequest;
 import pl.edu.agh.io.pdptw.model.RequestPositions;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
@@ -47,6 +48,7 @@ public class WorstRemoval implements RemovalAlgorithm {
 			RequestPositions positions = vehicle.removeRequest(pickup);
 			newObjective = objective.calculateForVehicle(vehicle);
 			positions.setObjectiveValue(newObjective);
+			
 			vehicle.insertRequest(pickup, positions.getPickupPosition(), positions.getDeliveryPosition());
 			
 			if (newObjective < minObjective) {

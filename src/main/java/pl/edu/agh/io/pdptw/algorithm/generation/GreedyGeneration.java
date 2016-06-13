@@ -42,8 +42,9 @@ public class GreedyGeneration implements GenerationAlgorithm {
 			}
 		}
 		
-		/* update the objective value */
+		solution.getVehicles().add(curVehicle);
 		
+		/* update the objective value */
 		solution.updateOjectiveValue(configuration.getAlgorithms().getObjective());
 		
 		return solution;

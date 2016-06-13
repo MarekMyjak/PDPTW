@@ -3,19 +3,18 @@ package pl.edu.agh.io.pdptw.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 
-@Getter
+@Data
 @ToString
 @EqualsAndHashCode
 
 public class Solution {
-	private final List<Vehicle> vehicles;
-	@Setter private double objectiveValue;
+	private List<Vehicle> vehicles;
+	private double objectiveValue;
 	
 	public Solution(List<Vehicle> vehicles) {
 		this.vehicles = vehicles;
@@ -42,6 +41,9 @@ public class Solution {
 		List<Vehicle> vehiclesCopies = vehicles.stream()
 				.map(v -> v.copy())
 				.collect(Collectors.toList());
-		return new Solution(vehiclesCopies);
+		Solution copied = new Solution(vehiclesCopies);
+		copied.setObjectiveValue(objectiveValue);
+		
+		return copied;
 	}
 }

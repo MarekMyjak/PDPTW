@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
  * object of this class so we deal
  * with a cyclical toString() calls. */
 
-public class Request {
+public abstract class Request {
 	
 	/* Time window parameters explanation:
 	 * @timeWindowStart - earliest possible request realization time
@@ -95,8 +95,26 @@ public class Request {
 	 * parameters) */
 	
 	public Request createShallowCopy() {
-		return new Request(id, location, volume,
-				timeWindowStart, timeWindowEnd, serviceTime, realizationTime,
-				arrivalTime, sibling, type);
+		
+		/* it's only declaration of the method that should
+		 * be implemented in classes extending the Request abstract
+		 * class */
+		
+		return this;
+	}
+	
+	public Request copy() {
+		
+		/* beware that we're calling 
+		 * here the specific implementations
+		 * of the createShallowCopy defined in the
+		 * classes extending the Request class */
+		
+		Request copy = createShallowCopy();
+		Request siblingCopy = sibling.createShallowCopy();
+		copy.setSibling(siblingCopy);
+		siblingCopy.setSibling(copy);
+		
+		return copy;
 	}
 }

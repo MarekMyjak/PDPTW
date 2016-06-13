@@ -24,7 +24,8 @@ public class SweepDecomposition implements DecompositionAlgorithm {
 		List<Vehicle> vehicles = solution.getVehicles();
 		Location warehouseLocation = vehicles.get(0).getStartLocation();
 		Map<Vehicle, Double> anglesForVehicles = new HashMap<>();
-		vehicles.forEach(v -> anglesForVehicles.put(v, 
+		vehicles.stream()
+			.forEach(v -> anglesForVehicles.put(v, 
 				Location.calculatePolarAngle(warehouseLocation,
 				Location.findCentroid(v.getRoute()
 						.getRequests()

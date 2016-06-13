@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.json.simple.parser.ParseException;
 
+import pl.edu.agh.io.pdptw.configuration.exception.InvalidFileFormatException;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Vehicle;
-import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
 public interface ConfigReader {
 	List<Configuration> loadConfiguration(String configFilePath)

@@ -11,16 +11,16 @@ import pl.edu.agh.io.pdptw.algorithm.optimization.DecompositionOptimizer;
 import pl.edu.agh.io.pdptw.configuration.AlgorithmConfiguration;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.configuration.DefaultConfigReader;
+import pl.edu.agh.io.pdptw.configuration.exception.InvalidFileFormatException;
 import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Solution;
 import pl.edu.agh.io.pdptw.model.Vehicle;
-import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) {
     	try {
     		LoggingUtils.info("Loading configuration data");
     		DefaultConfigReader loader = new DefaultConfigReader();
@@ -43,10 +43,6 @@ public class Main {
     			if (configuration.isDynamic()) {
     				LoggingUtils.info("Dynamic version detected");
     				RequestDispatcher dispatcher = new RequestDispatcher(requests, vehicles, configuration);
-    				Thread.sleep(60000);
-    				LoggingUtils.info("Back to the main method");
-    				solution = dispatcher.getSolution();
-    				
     			} else {
     				LoggingUtils.info("Static version detected");
     				solution = generation.generateSolution(requests, vehicles, configuration);
@@ -62,6 +58,5 @@ public class Main {
 			LoggingUtils.logStackTrace(e);
 			LoggingUtils.error("An error occurred while reading input file");
 		}
-
 	}
 }

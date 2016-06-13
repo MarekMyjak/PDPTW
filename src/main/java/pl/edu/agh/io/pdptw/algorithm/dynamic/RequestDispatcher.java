@@ -1,5 +1,6 @@
 package pl.edu.agh.io.pdptw.algorithm.dynamic;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -24,7 +25,7 @@ import pl.edu.agh.io.pdptw.model.Vehicle;
 
 public class RequestDispatcher {
 	private static final int INSERTION_CHECK_RATE = 10;
-	private static final int TIME_DELTA = 10;
+	private static final int TIME_DELTA = 100;
 	
 	@Getter private List<Request> requests;
 	@Getter private List<Vehicle> vehicles;
@@ -50,6 +51,7 @@ public class RequestDispatcher {
 		public void run() {
 			int curTime = time.addAndGet(TIME_DELTA);
 			LoggingUtils.info("Current time: " + curTime);
+			
 			List<PickupRequest> pickups = requests.stream()
 					.filter(r -> (r.getType() == RequestType.PICKUP)
 							&& (r.getArrivalTime() <= curTime))
@@ -63,56 +65,67 @@ public class RequestDispatcher {
 					.filter(r -> r.getArrivalTime() > curTime)
 					.collect(Collectors.toList());
 					
-			if (pickups.size() > 0) {
-				LoggingUtils.info("New requests have arrived");
+			try {
+				LoggingUtils.saveResult(solution, curTime, configuration);
+			} catch (IOException e) {
+				LoggingUtils.logStackTrace(e);
+			}
+			
+			try {
+				LoggingUtils.info("Attempting to stop the optimization thread");
+				optimizer.stopOptimization();
+				optimizerThread.join();
+			} catch (InterruptedException e) {
+				LoggingUtils.logStackTrace(e);
+			}
 				
-				try {
-					LoggingUtils.info("Attempting to stop the optimization thread");
-					optimizer.stopOptimization();
-					optimizerThread.join();
-				} catch (InterruptedException e) {
-					LoggingUtils.logStackTrace(e);
-				}
+			solution = optimizer.getSolution();
 				
-				solution = optimizer.getSolution();
-				
-				/* remove the finished requests from the current
-				 * solution */
-				
-				List<Integer> removedRequestsIds = solution.getVehicles()
-						.stream()
-						.flatMap(v -> v.removeFinishedRequests(curTime, true).stream())
-						.map(r -> r.getId())
-						.collect(Collectors.toList());
-				
-				/* remove the same requests from solutions 
-				 * stored in the adaptive memory and
-				 * reschedule the realization times */
-						
-				AdaptiveMemory adaptiveMemory = optimizer.getAdaptiveMemory();
-				adaptiveMemory.getSolutions()
-					.forEach(s -> s.getVehicles()
+			/* remove the finished requests from the current
+			 * solution */
+			
+			List<Integer> removedRequestsIds = solution.getVehicles()
+					.stream()
+					.flatMap(v -> v.removeFinishedRequests(curTime, true).stream())
+					.map(r -> r.getId())
+					.collect(Collectors.toList());
+			
+			/* remove the same requests from solutions 
+			 * stored in the adaptive memory and
+			 * reschedule the realization times */
+					
+			AdaptiveMemory adaptiveMemory = optimizer.getAdaptiveMemory();
+			adaptiveMemory.getSolutions()
+				.forEach(s -> s.getVehicles()
 							.forEach(v -> {
 								v.removeRequestsByIds(removedRequestsIds, curTime);
 							}));
-				LoggingUtils.info("---------------adaptive sol removed reqs");
-				
+			
+			if (pickups.size() > 0) {
 				LoggingUtils.info("Inserting new requests");
 				List<Vehicle> spareCopies = new LinkedList<>();
 				boolean insertedSuccessfully;
 				
+				
 				for (PickupRequest pickup : pickups) {
 					LoggingUtils.info("Inserting: " + pickup.getId() 
 							+ " (arrival time: " + pickup.getArrivalTime() + ")");
+					
+					/* note that we must copy the pickup request
+					 * before inserting it to each of the
+					 * solutions (in this way we'll avoid damaging
+					 * the request data shared by multiple vehicles) */
+					
+					PickupRequest pickupCopy = (PickupRequest) pickup.copy();
 					insertedSuccessfully = insertion.insertRequestToSolution(
-							pickup, solution, configuration);
+							pickupCopy, solution, configuration);
 					
 					if (!insertedSuccessfully) {
 						Vehicle spareVehicle = vehicles.get(vehiclesUsed);
 						spareCopies.add(spareVehicle);	
 						
 						LoggingUtils.info("Vehicle [" + spareVehicle.getId() + "] has been used");
-						insertion.insertRequestForVehicle(pickup, spareVehicle, configuration);
+						insertion.insertRequestForVehicle(pickupCopy, spareVehicle, configuration);
 						solution.getVehicles().add(spareVehicle);
 						vehiclesUsed++;
 					}
@@ -127,7 +140,14 @@ public class RequestDispatcher {
 					for (Solution s : adaptiveMemory.getSolutions()) {
 						int spareCopiesUsed = 0;
 						for (PickupRequest pickup : pickups) {
-							insertedSuccessfully = insertion.insertRequestToSolution(pickup, s, configuration);
+							
+							/* note that we must copy the pickup request
+							 * before inserting it to each of the
+							 * solutions (in this way we'll avoid damaging
+							 * the request data shared by multiple vehicles) */
+							
+							PickupRequest pickupCopy = (PickupRequest) pickup.copy();
+							insertedSuccessfully = insertion.insertRequestToSolution(pickupCopy, s, configuration);
 							
 							if (!insertedSuccessfully) {
 								Vehicle spareCopy;
@@ -137,12 +157,11 @@ public class RequestDispatcher {
 									vehiclesUsed++;
 								} else {
 									Vehicle spareVehicle = spareCopies.get(spareCopiesUsed);
-									spareCopy = spareVehicle.createShallowCopy();
-									spareCopy.setLocation(spareCopy.getStartLocation());
+									spareCopy = spareVehicle.copy();
 									spareCopy.setRoute(new Route(new LinkedList<>()));
 								}
 								
-								spareCopy.insertRequest(pickup, 0, 1);
+								insertion.insertRequestForVehicle(pickupCopy, spareCopy, configuration);
 								s.getVehicles().add(spareCopy);
 								spareCopiesUsed++;
 							}
@@ -151,12 +170,22 @@ public class RequestDispatcher {
 						s.updateOjectiveValue(objective);
 					}
 				}
-				
-				LoggingUtils.info("Starting optimizer thread");
-				
-				optimizer.setSolution(solution);
-				optimizerThread = optimizer.startThread();
 			}
+			
+			/* remove all vehicles with no requests
+			 * assigned to them */
+			
+			solution.setVehicles(solution.getVehicles()
+					.stream()
+					.filter(v -> v.getRoute().getRequests().size() > 0)
+					.collect(Collectors.toList()));
+			
+			adaptiveMemory.getSolutions().forEach(
+					s -> s.setVehicles(
+							s.getVehicles().stream()
+								.filter(v -> v.getRoute().getRequests().size() > 0)
+								.collect(Collectors.toList())
+							));
 			
 			/* print current requests for each vehicle from
 			 * the chosen solution */
@@ -168,8 +197,20 @@ public class RequestDispatcher {
 							+ v.getCurrentRequest(curTime).getId() + "]");
 				}
 			}
+
+			/* start the optizmiatin algorithm and
+			 * reschedule the insertion task if there
+			 * are more requests to insert or any 
+			 * requests that must be finished */
 			
-			if (requests.size() > 0) {
+			if (solution.getVehicles().size() > 1) {
+				optimizer.setSolution(solution);
+				optimizerThread = optimizer.startThread();
+			}
+			
+			if (requests.size() > 0
+					|| solution.getRequests().size() > 0) {
+				LoggingUtils.info("Starting optimizer thread");
 				
 				/* reschedule this task again in <INSERTION_CHECK_RATE> seconds */
 				

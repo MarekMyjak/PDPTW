@@ -17,13 +17,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import pl.edu.agh.io.pdptw.configuration.exception.InvalidFileFormatException;
 import pl.edu.agh.io.pdptw.model.DeliveryRequest;
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.RequestType;
 import pl.edu.agh.io.pdptw.model.Vehicle;
-import pl.edu.agh.io.pdptw.reader.exception.InvalidFileFormatException;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;

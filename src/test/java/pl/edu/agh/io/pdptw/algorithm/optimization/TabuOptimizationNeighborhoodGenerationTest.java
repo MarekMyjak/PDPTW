@@ -16,10 +16,6 @@ public class TabuOptimizationNeighborhoodGenerationTest {
 		System.out.println(solution + "\n\n\n");
 		Vehicle.setScheduler(new DriveFirstScheduler());
 		Configuration configuration = DataGenerator.generateConfiguration();
-		TabuOptimization optimization = new TabuOptimization();
-		optimization.generateNeighbors(solution, 3, 10, configuration);//.forEach(s -> System.out.println(s + "\n----------------"));
-		
-		
+		TabuOptimization.generateNeighbors(solution, 3, 10, configuration);
 	}
-
 }

@@ -1,12 +1,9 @@
 package pl.edu.agh.io.pdptw.model;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 
 import pl.edu.agh.io.pdptw.algorithm.insertion.GreedyInsertion;
 import pl.edu.agh.io.pdptw.algorithm.insertion.InsertionAlgorithm;
-import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 

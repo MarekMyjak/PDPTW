@@ -89,20 +89,7 @@ public class AdaptiveMemory {
 		return success;
 	}
 	
-	public boolean addSolutionWithObjective(Solution solution, double objectiveValue) {
-		boolean success = true;
-		
-		if (solutions.size() >= SIZE
-				|| contains(solution)) {
-			success = false;
-		} else {
-			solutions.add(solution);
-		}
-		
-		return success;
-	}
-	
-	public boolean removeSolution(Solution solution) {
+	public synchronized boolean removeSolution(Solution solution) {
 		boolean present = contains(solution);
 		
 		if (present) {
@@ -112,7 +99,7 @@ public class AdaptiveMemory {
 		return present;
 	}
 	
-	public Solution removeSolutionOnPosition(int position) {
+	public synchronized Solution removeSolutionOnPosition(int position) {
 		return solutions.remove(position);
 	}
 
@@ -195,7 +182,7 @@ public class AdaptiveMemory {
 	 *                   v1      v2            v3	  (vehicles)
 	 * */
 	
-	public Solution createRandomSolution(double threshold, int iterationsNo) 
+	public synchronized Solution createRandomSolution(double threshold, int iterationsNo) 
 			throws IllegalArgumentException {
 		
 		if (threshold < 0 || threshold >= 1) {

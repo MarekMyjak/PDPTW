@@ -1,9 +1,10 @@
 package pl.edu.agh.io.pdptw.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class Vehicle {
     private Location location;
     private final Location startLocation;
     private Route route;
-    private List<Integer> servedRequestsIds;
+    private Set<Integer> servedRequestsIds;
     
     /* note the static keyword */
     @Setter @Getter private static Scheduler scheduler = new DriveFirstScheduler();
@@ -34,12 +35,12 @@ public class Vehicle {
 			Location startLocation) {
 		
 		this(id, maxCapacity, startLocation, startLocation, 
-				new Route(new ArrayList<>()), new LinkedList<>());
+				new Route(new ArrayList<>()), new HashSet<>());
 	}
 	
 	public List<Request> removeFinishedRequests(int time, boolean shouldLog) {
 		
-		/* note that we leave also the pickup requests
+		/* note that we leave the pickup requests
 		 * that has already been served but have corresponding
 		 * delivery requests which are yet to be served! */
 		
@@ -49,11 +50,9 @@ public class Vehicle {
 					DeliveryRequest delivery = (DeliveryRequest) 
 							((r.getType() == RequestType.DELIVERY)
 									? r : r.getSibling());
-					return delivery.getRealizationTime() <= time;
+					return delivery.getRealizationTime() + delivery.getServiceTime() <= time;
 				})
 				.collect(Collectors.toList());
-		
-		scheduler.scheduleRequests(this, time);
 		
 		if (shouldLog) {
 			StringBuilder builder = new StringBuilder();
@@ -66,20 +65,21 @@ public class Vehicle {
 			}
 		}
 		
+		servedRequestsIds.addAll(route.getRequests()
+				.stream()
+				.filter(r -> r.getRealizationTime() + r.getServiceTime() <= time)
+				.map(r -> r.getId())
+				.collect(Collectors.toSet()));
 		route = new Route(route.getRequests()
 				.stream()
 				.filter(r -> {
 					DeliveryRequest delivery = (DeliveryRequest) 
 							((r.getType() == RequestType.DELIVERY)
 									? r : r.getSibling());
-					return delivery.getRealizationTime() > time;
+					return delivery.getRealizationTime() + delivery.getServiceTime() > time;
 				})
 				.collect(Collectors.toList()));
-		
-		servedRequestsIds.addAll(removedRequests.stream()
-				.map(r -> r.getId())
-				.collect(Collectors.toList()));
-		
+		scheduler.scheduleRequests(this, time);
 		return removedRequests;
 	}
 	
@@ -128,8 +128,10 @@ public class Vehicle {
 		 * time window constraints (realizationTime <= timeWindowEnd)
 		 */
 
-		Request deliveryRequest = pickupRequest.getSibling();
+
+		
 		boolean insertionPossible = true;
+		Request deliveryRequest = pickupRequest.getSibling();
 		Request prev = null;
 		Request cur = null;
 		Request pickupCopy = pickupRequest.createShallowCopy();
@@ -138,6 +140,15 @@ public class Vehicle {
 		int prevOriginalRealizationTime = 0;
 		int curOriginalRealizationTime = 0;
 		int counter = 0;
+		
+		/* we must not allow to insert a new request
+		 * befor an already served one */
+		
+		if (pickupPosition < requests.size()) {
+			Request nextRequest = requests.get(pickupPosition);
+			insertionPossible = insertionPossible 
+					&& !servedRequestsIds.contains(nextRequest.getId());
+		}
 		
 		while (insertionPossible
 				&& it.hasNext() 

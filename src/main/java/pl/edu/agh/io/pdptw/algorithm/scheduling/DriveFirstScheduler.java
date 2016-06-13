@@ -3,6 +3,7 @@ package pl.edu.agh.io.pdptw.algorithm.scheduling;
 import java.util.Iterator;
 import java.util.stream.Collectors;
 
+import pl.edu.agh.io.pdptw.logging.LoggingUtils;
 import pl.edu.agh.io.pdptw.model.Location;
 import pl.edu.agh.io.pdptw.model.Request;
 import pl.edu.agh.io.pdptw.model.Vehicle;
@@ -27,20 +28,22 @@ public class DriveFirstScheduler implements Scheduler {
 			
 			Iterator<Request> it = vehicle.getRoute().getRequests()
 					.stream()
-					.filter(r -> r.getTimeWindowEnd() > firstEarliestRealizationTime)
+					.filter(r -> r.getRealizationTime() >= firstEarliestRealizationTime)
 					.collect(Collectors.toList())
 					.iterator();
+			Request prev = null;
 			
-			Request prev = it.next();
+			if (it.hasNext()) {
+				prev = it.next();
+			}
 			
 			/* we need to check if the earliest realization time
 			 * is earlier than the end of the time window of the
 			 * first request */
 			
-			prev.setRealizationTime((firstEarliestRealizationTime >= prev.getTimeWindowStart())
-					? firstEarliestRealizationTime 
-					: prev.getTimeWindowStart());
-			prev.setRealizationTime(prev.getTimeWindowStart());
+//			prev.setRealizationTime((firstEarliestRealizationTime >= prev.getRealizationTime())
+//					? firstEarliestRealizationTime 
+//					: prev.getRealizationTime());
 			
 			while (it.hasNext()) {
 				Request cur = it.next();
@@ -58,9 +61,11 @@ public class DriveFirstScheduler implements Scheduler {
 				 * is earlier than the end of the time window */
 				
 				if (earliestRealizationTime > cur.getTimeWindowEnd()) {
-					System.out.println(copy);
-					System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^");
-					System.out.println(vehicle);
+					LoggingUtils.error(vehicle.getServedRequestsIds());
+					LoggingUtils.error(copy);
+					LoggingUtils.error("-----------------------");
+					LoggingUtils.error(vehicle);
+					
 					throw new IllegalArgumentException("Earliest realization time"
 							+ " is greater than the end of the time window" + earliestRealizationTime);
 				}

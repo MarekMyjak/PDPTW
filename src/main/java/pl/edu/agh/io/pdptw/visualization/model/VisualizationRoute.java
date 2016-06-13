@@ -1,4 +1,4 @@
-package pl.edu.agh.io.pdptw.model.visualization;
+package pl.edu.agh.io.pdptw.visualization.model;
 
 import lombok.AllArgsConstructor;
 import pl.edu.agh.io.pdptw.model.Location;

@@ -1,6 +1,5 @@
 package pl.edu.agh.io.pdptw.algorithm.optimization;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -80,14 +79,9 @@ public class DecompositionOptimizer implements Runnable {
 			}
 			
 			LoggingUtils.info("A decomposition cycle has been finished");
-			try {
-				visualizationService.makeVisualizationData(solution, configuration);
-				LoggingUtils.saveResult(solution, configuration);
-			} catch (IOException e) {
-				LoggingUtils.logStackTrace(e);
-			}
 			
 			adaptiveMemory.addSolution(solution);
+			adaptiveMemory.update();
 			solution = adaptiveMemory.createRandomSolution(0.65, 3);
 		}
 		

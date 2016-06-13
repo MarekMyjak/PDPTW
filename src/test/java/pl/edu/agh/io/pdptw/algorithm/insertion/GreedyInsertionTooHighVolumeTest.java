@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
-import pl.edu.agh.io.pdptw.algorithm.objective.TotalDistanceObjective;
 import pl.edu.agh.io.pdptw.algorithm.scheduling.DriveFirstScheduler;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.DeliveryRequest;
@@ -21,7 +19,6 @@ import pl.edu.agh.io.pdptw.test.util.DataGenerator;
 public class GreedyInsertionTooHighVolumeTest {
 	private final int REQUESTS_NO = 10;
 	private Route route = DataGenerator.generateRoute(REQUESTS_NO);
-	private Objective objective = new TotalDistanceObjective();
 	private InsertionAlgorithm insertionAlg = new GreedyInsertion();
 		
 	@Test

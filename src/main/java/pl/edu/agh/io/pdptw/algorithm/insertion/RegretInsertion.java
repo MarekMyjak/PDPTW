@@ -1,6 +1,5 @@
 package pl.edu.agh.io.pdptw.algorithm.insertion;
 
-import pl.edu.agh.io.pdptw.algorithm.objective.Objective;
 import pl.edu.agh.io.pdptw.configuration.Configuration;
 import pl.edu.agh.io.pdptw.model.PickupRequest;
 import pl.edu.agh.io.pdptw.model.RequestPositions;
